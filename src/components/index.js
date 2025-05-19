@@ -9,10 +9,8 @@ import ChartCard from "./Cards/ChartCard.vue";
 import StatsCard from "./Cards/StatsCard.vue";
 
 import SidebarPlugin from "./SidebarPlugin/index";
-import UserTable from "./UserTable.vue";
-
-import Investigators from "@/layout/users/Investigators.vue";
-import Responsibles from "@/layout/users/Responsibles.vue";
+import DataTable from "./DataTable.vue";
+import Documents from "./Documents.vue";
 
 let components = {
   FormGroupInput,
@@ -20,11 +18,10 @@ let components = {
   ChartCard,
   StatsCard,
   PaperTable,
-  UserTable,
+  DataTable,
   DropDown,
+  Documents,
   SidebarPlugin,
-  Responsibles,
-  Investigators,
 };
 
 export default components;
@@ -35,10 +32,9 @@ export {
   ChartCard,
   StatsCard,
   PaperTable,
-  UserTable,
+  DataTable,
   DropDown,
+  Documents,
   Button,
   SidebarPlugin,
-  Responsibles,
-  Investigators,
 };

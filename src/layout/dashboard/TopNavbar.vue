@@ -1,7 +1,10 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">{{ routeName }}</a>
+      <a class="navbar-brand" :href="'#/' + $route.path.replace(/^\/+/, '')">
+        {{ routeName }}
+      </a>
+      <span>{{ userDB }}</span>
       <button
         class="navbar-toggler navbar-burger"
         type="button"
@@ -17,23 +20,28 @@
         <ul class="navbar-nav ml-auto">
           <drop-down
             class="nav-item"
-            title="Nickname"
+            :title="nickname"
             title-classes="nav-link"
             icon="ti-user"
           >
-            <div class="info">
-              <p>Nombre</p>
-              <p>Correo</p>
+            <div>
+              <div class="info">
+                <p>{{ name }}</p>
+                <p>{{ email }}</p>
+              </div>
+              <button class="dropdown-item" @click="logout">
+                <i class="ti-shift-left"></i>Salir
+              </button>
             </div>
-
-            <p class="dropdown-item"><i class="ti-shift-left"></i>Salir</p>
           </drop-down>
         </ul>
       </div>
+      <div style="width: 70px"></div>
     </div>
   </nav>
 </template>
 <script>
+import keycloak from "@/plugins/keycloak";
 export default {
   computed: {
     routeName() {
@@ -44,6 +52,10 @@ export default {
   data() {
     return {
       activeNotifications: false,
+      nickname: this.$store.state.userInfo.preferred_username,
+      name: this.$store.state.userInfo.given_name,
+      email: this.$store.state.userInfo.email,
+      userDB: this.$store.state.userDbData,
     };
   },
   methods: {
@@ -62,6 +74,20 @@ export default {
     hideSidebar() {
       this.$sidebar.displaySidebar(false);
     },
+    logout() {
+      keycloak.logout();
+    },
+    adjustDropdownPosition(event) {
+      const dropdown = event.target.querySelector(".dropdown-menu");
+      if (!dropdown) return;
+
+      const rect = dropdown.getBoundingClientRect();
+      if (rect.right > window.innerWidth) {
+        dropdown.classList.add("dropdown-menu-right");
+      } else {
+        dropdown.classList.remove("dropdown-menu-right");
+      }
+    },
   },
 };
 </script>
@@ -76,5 +102,11 @@ export default {
     margin: 0px;
     color: gray;
   }
+}
+
+#menu {
+  right: 0 !important;
+  left: auto !important;
+  border: solid 1px #9d1c1c;
 }
 </style>

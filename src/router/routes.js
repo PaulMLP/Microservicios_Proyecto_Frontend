@@ -11,7 +11,8 @@ import Maps from "@/pages/Maps.vue";
 import Typography from "@/pages/Typography.vue";
 import TableList from "@/pages/TableList.vue";
 import UsersList from "@/pages/UsersList.vue";
-import Projects from "@/pages/Projects.vue";
+import ProjectsList from "@/pages/ProjectsList.vue";
+import UserProjectsList from "@/pages/UserProjectsList.vue";
 
 const routes = [
   {
@@ -26,12 +27,12 @@ const routes = [
       },
       {
         path: "stats",
-        name: "stats",
+        name: "estatisticas",
         component: UserProfile,
       },
       {
         path: "notifications",
-        name: "notifications",
+        name: "notificaciones",
         component: Notifications,
       },
       {
@@ -61,8 +62,13 @@ const routes = [
       },
       {
         path: "projects",
-        name: "projects",
-        component: Projects,
+        name: "proyectos",
+        component: ProjectsList,
+      },
+      {
+        path: "my-projects",
+        name: "Mis Proyectos",
+        component: UserProjectsList,
       },
     ],
   },

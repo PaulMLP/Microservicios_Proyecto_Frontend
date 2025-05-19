@@ -17,8 +17,8 @@
   </div>
 </template>
 <script>
-import { Investigators } from "../components";
-import { Responsibles } from "../components";
+import Investigators from "./Users/Investigators.vue";
+import Responsibles from "./Users/Responsibles.vue";
 
 export default {
   components: {
@@ -53,8 +53,11 @@ export default {
 }
 #tarjeta {
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 #tarjeta:hover {
   background-color: #d5d5d5;
+  scale: 1.02;
+  transition: all 0.2s ease;
 }
 </style>

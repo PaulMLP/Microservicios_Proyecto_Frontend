@@ -10,6 +10,7 @@
           icon="ti-view-list-alt"
         />
         <sidebar-link to="/projects" name="Proyectos" icon="ti-briefcase" />
+        <sidebar-link to="/my-projects" name="Mis Proyectos" icon="ti-briefcase" />
         <sidebar-link to="/typography" name="Typography" icon="ti-text" />
         <sidebar-link to="/icons" name="Icons" icon="ti-pencil-alt2" />
         <sidebar-link to="/notifications" name="Notifications" icon="ti-bell" />
