@@ -1,5 +1,10 @@
 <template>
-  <EditProject v-if="edit" :project="project" @saved="saved" />
+  <EditProject
+    v-if="edit"
+    :project="project"
+    @saved="saved"
+    @refresh="recargarComponente"
+  />
   <div class="row" v-else>
     <div class="col-12">
       <card :title="table.title" :subTitle="table.subTitle">
@@ -21,7 +26,11 @@
 <script>
 import { DataTable } from "@/components";
 import EditProject from "./Projects/EditProject.vue";
-
+import {
+  fetchProyectosFachada,
+  fetchProyectoIdFachada,
+} from "@/clients/projects.js";
+import { cambiarFecha } from "../utils/methods";
 export default {
   components: {
     DataTable,
@@ -36,11 +45,10 @@ export default {
       tableColumns: [
         { label: "ID", key: "id", width: "5%" },
         { label: "Título", key: "titulo", width: "18%" },
-        { label: "Descripción", key: "descripcion", width: "33%" },
-        { label: "Estado", key: "estado", width: "10%" },
-        { label: "Fecha Inicio", key: "fechaInicio", width: "10%" },
+        { label: "Descripción", key: "descripcion", width: "37%" },
+        { label: "Estado", key: "estado", width: "15%" },
+        { label: "Fecha Inicio", key: "fechaInicio", width: "15%" },
         { label: "Fecha Fin", key: "fechaFin", width: "10%" },
-        { label: "Responsable", key: "responsable", width: "14%" },
       ],
       table: {
         title: "",
@@ -50,59 +58,13 @@ export default {
       },
     };
   },
-  mounted() {
-    this.totalData = [
-      {
-        id: 1,
-        titulo: "Sistema de Gestión de Proyectos de Tesis",
-        descripcion:
-          "Aplicación para organizar y supervisar proyectos de tesis de estudiantes universitarios.",
-        estado: "progreso",
-        fechaInicio: "2025-03-15",
-        fechaFin: "2025-11-30",
-        responsable: 1,
-      },
-      {
-        id: 2,
-        titulo: "Plataforma de Publicaciones Académicas",
-        descripcion:
-          "Sistema para gestionar la revisión, publicación y difusión de artículos académicos.",
-        estado: "pendiente",
-        fechaInicio: "2025-07-01",
-        fechaFin: "2026-01-15",
-        responsable: 2,
-      },
-      {
-        id: 3,
-        titulo: "Observatorio de Innovación Tecnológica",
-        descripcion:
-          "Herramienta para monitorear y documentar avances tecnológicos en áreas estratégicas.",
-        estado: "completado",
-        fechaInicio: "2024-09-01",
-        fechaFin: "2025-04-30",
-        responsable: 3,
-      },
-      {
-        id: 4,
-        titulo: "Red Colaborativa de Investigadores",
-        descripcion:
-          "Plataforma que facilita la colaboración entre investigadores de distintas instituciones.",
-        estado: "progreso",
-        fechaInicio: "2025-01-10",
-        fechaFin: "2025-12-10",
-        responsable: 1,
-      },
-      {
-        id: 5,
-        titulo: "Repositorio de Datos Científicos",
-        descripcion:
-          "Sistema para almacenar, consultar y compartir conjuntos de datos científicos.",
-        estado: "pendiente",
-        fechaInicio: "2025-08-01",
-        fechaFin: "2026-03-31",
-        responsable: 2,
-      },
-    ];
+  async mounted() {
+    this.totalData = await fetchProyectosFachada();
+    this.totalData = this.totalData.map((proyecto) => ({
+      ...proyecto,
+      fechaInicio: cambiarFecha(proyecto.fechaInicio),
+      fechaFin: cambiarFecha(proyecto.fechaFin),
+    }));
 
     this.table = {
       title: "Todos los Proyectos",
@@ -113,17 +75,34 @@ export default {
   },
   methods: {
     addProject() {
+      this.project = null;
       this.edit = true;
     },
-    open(item) {
-      this.user = item;
-      alert("Your data: " + JSON.stringify(this.user));
-      if (this.user) {
+    async open(item) {
+      alert("Abriendo proyecto: " + item.id);
+      await fetchProyectoIdFachada(item.id).then((response) => {
+        this.project = response;
+      });
+      if (this.project) {
         this.edit = true;
       }
     },
     saved(value) {
       this.edit = !value;
+    },
+    async recargarComponente() {
+      this.totalData = [];
+      this.table.data = [];
+      console.log("Recargando componente...");
+
+      this.totalData = await fetchProyectosFachada();
+      this.totalData = this.totalData.map((proyecto) => ({
+        ...proyecto,
+        fechaInicio: cambiarFecha(proyecto.fechaInicio),
+        fechaFin: cambiarFecha(proyecto.fechaFin),
+      }));
+
+      this.table.data = [...this.totalData];
     },
   },
 };

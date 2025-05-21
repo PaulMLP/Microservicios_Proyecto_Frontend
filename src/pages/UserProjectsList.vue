@@ -21,25 +21,36 @@
 <script>
 import { DataTable } from "@/components";
 import Project from "./Projects/Project.vue";
-
+import {
+  fetchProyectosUsuarioFachada,
+  fetchProyectoIdFachada,
+} from "@/clients/projects.js";
+import { cambiarFecha } from "../utils/methods";
 export default {
   components: {
     DataTable,
     Project,
   },
+  computed: {
+    routeName() {
+      const { name } = this.$route;
+      return this.capitalizeFirstLetter(name);
+    },
+  },
   data() {
     return {
+      userDB: this.$store.state.userDbData,
+      token: this.$store.state.token,
       show: false,
       project: null,
       totalData: [],
       tableColumns: [
         { label: "ID", key: "id", width: "5%" },
-        { label: "Título", key: "titulo", width: "18%" },
-        { label: "Descripción", key: "descripcion", width: "33%" },
+        { label: "Título", key: "titulo", width: "20%" },
+        { label: "Descripción", key: "descripcion", width: "35%" },
         { label: "Estado", key: "estado", width: "10%" },
         { label: "Fecha Inicio", key: "fechaInicio", width: "10%" },
         { label: "Fecha Fin", key: "fechaFin", width: "10%" },
-        { label: "Responsable", key: "responsable", width: "14%" },
       ],
       table: {
         title: "",
@@ -49,59 +60,14 @@ export default {
       },
     };
   },
-  mounted() {
-    this.totalData = [
-      {
-        id: 1,
-        titulo: "Sistema de Gestión de Proyectos de Tesis",
-        descripcion:
-          "Aplicación para organizar y supervisar proyectos de tesis de estudiantes universitarios.",
-        estado: "progreso",
-        fechaInicio: "2025-03-15",
-        fechaFin: "2025-11-30",
-        responsable: 1,
-      },
-      {
-        id: 2,
-        titulo: "Plataforma de Publicaciones Académicas",
-        descripcion:
-          "Sistema para gestionar la revisión, publicación y difusión de artículos académicos.",
-        estado: "pendiente",
-        fechaInicio: "2025-07-01",
-        fechaFin: "2026-01-15",
-        responsable: 2,
-      },
-      {
-        id: 3,
-        titulo: "Observatorio de Innovación Tecnológica",
-        descripcion:
-          "Herramienta para monitorear y documentar avances tecnológicos en áreas estratégicas.",
-        estado: "completado",
-        fechaInicio: "2024-09-01",
-        fechaFin: "2025-04-30",
-        responsable: 3,
-      },
-      {
-        id: 4,
-        titulo: "Red Colaborativa de Investigadores",
-        descripcion:
-          "Plataforma que facilita la colaboración entre investigadores de distintas instituciones.",
-        estado: "progreso",
-        fechaInicio: "2025-01-10",
-        fechaFin: "2025-12-10",
-        responsable: 1,
-      },
-      {
-        id: 5,
-        titulo: "Repositorio de Datos Científicos",
-        descripcion:
-          "Sistema para almacenar, consultar y compartir conjuntos de datos científicos.",
-        estado: "pendiente",
-        fechaInicio: "2025-08-01",
-        fechaFin: "2026-03-31",
-        responsable: 2,
-      },
-    ];
+  async mounted() {
+    this.totalData = await fetchProyectosUsuarioFachada(this.userDB.id);
+
+    this.totalData = this.totalData.map((proyecto) => ({
+      ...proyecto,
+      fechaInicio: cambiarFecha(proyecto.fechaInicio),
+      fechaFin: cambiarFecha(proyecto.fechaFin),
+    }));
 
     this.table = {
       title: "Todos los Proyectos",
@@ -111,9 +77,10 @@ export default {
     };
   },
   methods: {
-    open(item) {
-      this.project = item;
-      alert("Your data my project: " + JSON.stringify(this.project));
+    async open(item) {
+      await fetchProyectoIdFachada(item.id).then((response) => {
+        this.project = response;
+      });
       if (this.project) {
         this.show = true;
       }

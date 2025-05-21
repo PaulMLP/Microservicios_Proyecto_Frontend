@@ -5,7 +5,7 @@
         Agregar <span class="ti-plus"></span>
       </button>
     </div>
-    <table v-if="data[0]" class="table" :class="tableClass">
+    <table v-if="data.length > 0" class="table" :class="tableClass">
       <thead>
         <slot name="columns">
           <tr>
@@ -41,6 +41,9 @@
         </tr>
       </tbody>
     </table>
+    <div v-if="data.length <= 0" class="text-center m-5 w-100">
+      <span>No hay datos que mostrar</span>
+    </div>
   </div>
 </template>
 
