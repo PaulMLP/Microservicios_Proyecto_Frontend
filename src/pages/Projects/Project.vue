@@ -24,7 +24,8 @@
         </card>
       </div>
     </div>
-    <Documents v-if="selected === 'card1'" />
+    <hr />
+    <Documents v-if="selected === 'card1'" :project="project.id"/>
     <Tasks v-if="selected === 'card2'" />
   </div>
 </template>
@@ -91,8 +92,8 @@ export default {
   },
   mounted() {
     this.projectAux = this.project;
-    this.estadoClase();
-    this.mensajeEstado();
+    this.estadoClase;
+    this.mensajeEstado;
   },
   methods: {
     exit() {
@@ -173,5 +174,32 @@ export default {
 
 .estado-default {
   background-color: #3182ce;
+}
+
+
+.spinner-container {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #ccc;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>

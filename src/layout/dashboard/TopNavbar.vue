@@ -28,6 +28,7 @@
               <div class="info">
                 <p>{{ name }}</p>
                 <p>{{ email }}</p>
+                <p>{{ role }}</p>
               </div>
               <button class="dropdown-item" @click="logout">
                 <i class="ti-shift-left"></i>Salir
@@ -55,6 +56,7 @@ export default {
       nickname: this.$store.state.userInfo.preferred_username,
       name: this.$store.state.userInfo.given_name,
       email: this.$store.state.userInfo.email,
+      role: this.$store.state.userDbData.rol,
       userDB: this.$store.state.userDbData,
     };
   },
@@ -75,6 +77,8 @@ export default {
       this.$sidebar.displaySidebar(false);
     },
     logout() {
+      this.$store.commit("setUserInfo", null);
+      this.$store.commit("setUserDbData", null);
       keycloak.logout();
     },
     adjustDropdownPosition(event) {
