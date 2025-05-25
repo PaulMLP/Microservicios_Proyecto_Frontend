@@ -5,6 +5,7 @@ import store from "@/store";
  * URL de la API para gestionar los usuarios.
  */
 const API_URL = "http://localhost:7070/app-proyectos/proyectos";
+const API_URL_TAREA = "http://localhost:7070/app-proyectos/tareas";
 
 /**
  * Retorna los headers con el token actual de Vuex.
@@ -15,6 +16,14 @@ const getAuthHeaders = () => ({
 
 export const fetchProyectosFachada = async () => {
   return await fetchProyectos();
+};
+
+export const fetchTareasFachada = async (id) => {
+  return await fetchTareas(id);
+};
+
+export const fetchMisTareasFachada = async (id) => {
+  return await fetchMisTareas(id);
 };
 
 export const fetchProyectoIdFachada = async (id) => {
@@ -29,23 +38,26 @@ export const createProyectoFachada = async (proyecto) => {
   return await createProyecto(proyecto);
 };
 
-export const createproyectoInvestigadorFachada = async (
-  proyectoInvestigador,
-) => {
-  return await createProyectoInvestigador(proyectoInvestigador);
+export const createTareaFachada = async (tarea) => {
+  return await createTarea(tarea);
 };
 
 export const updateProyectoFachada = async (proyecto) => {
   return await updateProyecto(proyecto);
 };
 
+export const updateTareaFachada = async (tarea) => {
+  return await updateTarea(tarea);
+};
+
 export const deleteProyectoFachada = async (id) => {
   return await deleteProyecto(id);
 };
 
-export const deleteProyectoInvestigadorFachada = async (id) => {
-  return await deleteProyectoInvestigador(id);
+export const deleteTareaFachada = async (id) => {
+  return await deleteTarea(id);
 };
+
 const fetchProyectos = async () => {
   try {
     const data = await axios
@@ -54,6 +66,29 @@ const fetchProyectos = async () => {
     return data;
   } catch (error) {
     console.error("Error fetching proyectos:", error);
+    throw error;
+  }
+};
+const fetchTareas = async (id) => {
+  try {
+    const data = await axios
+      .get(`${API_URL_TAREA}/${id}`, { headers: getAuthHeaders() })
+      .then((r) => r.data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching tasks:", error);
+    throw error;
+  }
+};
+
+const fetchMisTareas = async (id) => {
+  try {
+    const data = await axios
+      .get(`${API_URL_TAREA}/mis-tareas/${id}`, { headers: getAuthHeaders() })
+      .then((r) => r.data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching tasks:", error);
     throw error;
   }
 };
@@ -98,14 +133,16 @@ const createProyecto = async (proyecto) => {
   }
 };
 
-const createProyectoInvestigador = async (proyectoInvestigador) => {
+const createTarea = async (tarea) => {
   try {
     const data = await axios
-      .post(API_URL_PI, proyectoInvestigador, { headers: getAuthHeaders() })
+      .post(API_URL_TAREA, tarea, { headers: getAuthHeaders() })
       .then((r) => r.data);
+    console.log(data);
+
     return data;
   } catch (error) {
-    console.error("Error creating proyecto-investigador:", error);
+    console.error("Error creating tarea:", error);
     throw error;
   }
 };
@@ -124,6 +161,20 @@ const updateProyecto = async (proyecto) => {
   }
 };
 
+const updateTarea = async (tarea) => {
+  console.log(tarea);
+
+  try {
+    const data = await axios
+      .put(`${API_URL_TAREA}/${tarea.id}`, tarea, { headers: getAuthHeaders() })
+      .then((r) => r.data);
+    return data;
+  } catch (error) {
+    console.error("Error updating task:", error);
+    throw error;
+  }
+};
+
 const deleteProyecto = async (id) => {
   try {
     const data = await axios
@@ -136,14 +187,14 @@ const deleteProyecto = async (id) => {
   }
 };
 
-const deleteProyectoInvestigador = async (id) => {
+const deleteTarea = async (id) => {
   try {
     const data = await axios
-      .delete(`${API_URL_PI}/${id}`, { headers: getAuthHeaders() })
+      .delete(`${API_URL_TAREA}/${id}`, { headers: getAuthHeaders() })
       .then((r) => r.data);
     return data;
   } catch (error) {
-    console.error("Error deleting proyecto:", error);
+    console.error("Error deleting tarea:", error);
     throw error;
   }
 };

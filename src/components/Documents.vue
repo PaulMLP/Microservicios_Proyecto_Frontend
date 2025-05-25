@@ -212,7 +212,7 @@
               </div>
             </div>
           </div>
-          <div class="doc-footer">{{ doc.fecha }}</div>
+          <div class="doc-footer">{{ cambiarFecha(doc.fechaSubida) }}</div>
         </div>
       </div>
     </div>
@@ -230,13 +230,14 @@ import {
   fetchComentariosFachada,
   createComentarioFachada,
   deleteComentarioFachada,
+  sendComentarioFachada,
 } from "@/clients/comments.js";
 import { cambiarFecha } from "@/utils/methods.js";
 
 export default {
   name: "documents",
   props: {
-    project: Number,
+    project: Object,
   },
   data() {
     return {
@@ -261,7 +262,7 @@ export default {
     async fetchAllDocs() {
       this.docs_await = true;
       this.documentos = [];
-      this.documentos = await fetchDocumentosFachada(this.project);
+      this.documentos = await fetchDocumentosFachada(this.project.id);
       this.docs_await = false;
       if (this.documentos) {
         this.doc_comm = await this.combinarDocumentosConComentarios(
@@ -276,7 +277,7 @@ export default {
         descripcion: this.documentAux.descripcion,
         tipo: this.fileInfo.tipo,
         usuarioId: this.$store.state.userDbData.id,
-        proyectoId: this.project,
+        proyectoId: this.project.id,
         fechaSubida: new Date().toISOString(),
         tamanio: this.fileInfo.tamano,
         url: this.fileInfo.data,
@@ -326,6 +327,14 @@ export default {
       };
       await createComentarioFachada(comentario);
 
+      const mail = {
+        para: "merizaldeleo@gmail.com",
+        asunto: this.project.titulo,
+        mensaje: comentario.comentario,
+      };
+      sendComentarioFachada(mail);
+
+      this.fetchAllDocs();
       this.openComment = false;
     },
 
@@ -550,8 +559,8 @@ export default {
 .content-right {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  max-height: 150px;
+  justify-content: flex-start;
+  max-height: 200px;
   overflow-y: auto;
 }
 

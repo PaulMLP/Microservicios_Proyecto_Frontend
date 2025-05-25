@@ -96,7 +96,6 @@
               :multiple="true"
               :select-label="'Click o enter para seleccionar'"
               :deselect-label="'Click o enter para eliminar'"
-              :selected-label="seleccionados"
             ></multiselect>
           </div>
         </div>
@@ -107,7 +106,7 @@
           <span v-if="errores.responsable" class="text-danger"
             >Debe seleccionar un responsable.</span
           >
-          <span v-if="errores.responsable" class="text-danger"
+          <span v-if="errores.investigadores" class="text-danger"
             >Debe seleccionar al menos un investigador.</span
           >
         </div>
@@ -120,12 +119,22 @@
             <span class="ti-save"></span>
             <span style="margin-left: 5px">Guardar</span>
           </p-button>
-          <p-button v-else type="info" native-type="submit">
-            <span class="ti-reload"></span>
-            <span style="margin-left: 5px">Actualizar</span>
-          </p-button>
+          <div v-else class="botones">
+            <p-button type="primary" native-type="submit">
+              <span class="ti-reload"></span>
+              <span style="margin-left: 5px">Actualizar</span>
+            </p-button>
+            <p-button type="default" @click.native.prevent="drop">
+              <span class="ti-trash"></span>
+              <span style="margin-left: 5px">Eliminar</span>
+            </p-button>
+          </div>
 
-          <p-button v-if="!project" type="danger" @click.native.prevent="clean">
+          <p-button
+            v-if="!project"
+            type="default"
+            @click.native.prevent="clean"
+          >
             <span class="ti-trash"></span>
             <span style="margin-left: 5px">Limpiar</span>
           </p-button>
@@ -241,6 +250,12 @@ export default {
       }
     },
 
+    async drop() {
+      await deleteProyectoFachada(this.project.id);
+      this.$emit("refresh");
+      this.$emit("saved", true);
+    },
+
     exit() {
       const resultado = confirm("¿Estás seguro de que quieres salir?");
       if (resultado) {
@@ -277,6 +292,12 @@ export default {
 
 <style scoped>
 @import "~vue-multiselect/dist/vue-multiselect.min.css";
+.botones {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 5px;
+}
 
 .card-header {
   display: flex;

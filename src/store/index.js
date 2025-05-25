@@ -15,6 +15,9 @@ export default new Vuex.Store({
     setToken(state, token) {
       state.token = token;
     },
+    setUserRol(state, rol) {
+      state.rol = rol;
+    },
     setUserDbData(state, userDbData) {
       state.userDbData = userDbData;
     },

@@ -18,6 +18,10 @@ export const obtenerTodosUsuariosFachada = async (rol) => {
   return await obtenerTodosUsuarios(rol);
 };
 
+export const obtenerUsuarioFachada = async (id) => {
+  return await obtenerUsuario(id);
+};
+
 export const crearUsuarioFachada = async (usuario) => {
   return await crearUsuario(usuario);
 };
@@ -57,6 +61,19 @@ const obtenerUsuarioKeycloak = async (email) => {
     return data;
   } catch (error) {
     console.error("Error fetching user by email:", error.message);
+    throw error;
+  }
+};
+
+const obtenerUsuario = async (id) => {
+  const url = `${API_URL}/${id}`;
+  try {
+    const data = await axios
+      .get(url, { headers: getAuthHeaders() })
+      .then((r) => r.data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching user:", error.message);
     throw error;
   }
 };

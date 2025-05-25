@@ -13,6 +13,7 @@ import TableList from "@/pages/TableList.vue";
 import UsersList from "@/pages/UsersList.vue";
 import ProjectsList from "@/pages/ProjectsList.vue";
 import UserProjectsList from "@/pages/UserProjectsList.vue";
+import UserTasksList from "@/pages/UserTasksList.vue";
 
 const routes = [
   {
@@ -59,29 +60,29 @@ const routes = [
         path: "users-list",
         name: "Lista de Usuarios",
         component: UsersList,
+        meta: { allowedRoles: ["admin"] }, // Solo admins
       },
       {
         path: "projects",
         name: "proyectos",
         component: ProjectsList,
+        meta: { allowedRoles: ["admin"] }, // Solo admins
       },
       {
         path: "my-projects",
         name: "Mis Proyectos",
         component: UserProjectsList,
+        meta: { allowedRoles: ["investigador", "responsable"] }, // Investigador y responsable
+      },
+      {
+        path: "my-tasks",
+        name: "Mis Tareas",
+        component: UserTasksList,
+        meta: { allowedRoles: ["investigador", "responsable"] }, // Investigador y responsable
       },
     ],
   },
   { path: "*", component: NotFound },
 ];
-
-/**
- * Asynchronously load view (Webpack Lazy loading compatible)
- * The specified component must be inside the Views folder
- * @param  {string} name  the filename (basename) of the view to load.
-function view(name) {
-   var res= require('../components/Dashboard/Views/' + name + '.vue');
-   return res;
-};**/
 
 export default routes;

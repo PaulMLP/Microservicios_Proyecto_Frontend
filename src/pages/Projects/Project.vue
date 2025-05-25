@@ -25,8 +25,8 @@
       </div>
     </div>
     <hr />
-    <Documents v-if="selected === 'card1'" :project="project.id"/>
-    <Tasks v-if="selected === 'card2'" />
+    <Documents v-if="selected === 'card1'" :project="project" />
+    <Tasks v-if="selected === 'card2'" :project="project" />
   </div>
 </template>
 
@@ -175,7 +175,6 @@ export default {
 .estado-default {
   background-color: #3182ce;
 }
-
 
 .spinner-container {
   width: 100px;

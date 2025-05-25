@@ -2,15 +2,37 @@
   <div class="wrapper">
     <side-bar>
       <template slot="links">
-        <sidebar-link to="/dashboard" name="Dashboard" icon="ti-panel" />
+        <sidebar-link
+          v-if="this.$store.state.rol === 'admin'"
+          to="/dashboard"
+          name="Dashboard"
+          icon="ti-panel"
+        />
         <sidebar-link to="/stats" name="Perfil de Usuario" icon="ti-user" />
         <sidebar-link
+          v-if="this.$store.state.rol === 'admin'"
           to="/users-list"
           name="Usuarios"
           icon="ti-view-list-alt"
         />
-        <sidebar-link to="/projects" name="Proyectos" icon="ti-briefcase" />
-        <sidebar-link to="/my-projects" name="Mis Proyectos" icon="ti-briefcase" />
+        <sidebar-link
+          v-if="this.$store.state.rol === 'admin'"
+          to="/projects"
+          name="Proyectos"
+          icon="ti-briefcase"
+        />
+        <sidebar-link
+          v-if="this.$store.state.rol !== 'admin'"
+          to="/my-projects"
+          name="Mis Proyectos"
+          icon="ti-briefcase"
+        />
+        <sidebar-link
+          v-if="this.$store.state.rol !== 'admin'"
+          to="/my-tasks"
+          name="Mis Tareas"
+          icon="ti-file"
+        />
         <sidebar-link to="/typography" name="Typography" icon="ti-text" />
         <sidebar-link to="/icons" name="Icons" icon="ti-pencil-alt2" />
         <sidebar-link to="/notifications" name="Notifications" icon="ti-bell" />

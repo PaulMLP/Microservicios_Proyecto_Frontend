@@ -6,34 +6,48 @@
         v-for="tarea in tareas"
         :key="tarea.id"
         draggable="true"
-        @dragstart="handleDragStart(tarea.id)"
+        @dragstart="handleDragStart($event, tarea.id)"
+        @click="openTask(tarea)"
         class="task"
       >
-        {{ tarea.nombre }}
+        <strong>{{ tarea.descripcion }}</strong>
+        <small class="text-muted fs-6">
+          {{ calcularDiasRestantes(tarea.fechaVencimiento) }}
+        </small>
       </div>
     </div>
   </div>
 </template>
 
-<script setup>
-import { defineProps, defineEmits } from "vue";
+<script>
+import { calcularDiasRestantes } from "@/utils/methods";
+export default {
+  data() {
+    return {
+      view_task: false,
+    };
+  },
+  props: {
+    estado: String,
+    tareas: Array,
+  },
+  methods: {
+    async openTask(tarea) {
+      this.$emit('getTarea', tarea);
+    },
 
-const props = defineProps({
-  estado: String,
-  tareas: Array,
-});
-
-const emit = defineEmits(["mover-tarea"]);
-
-const handleDragStart = (tareaId) => {
-  event.dataTransfer.setData("tarea-id", tareaId);
-};
-
-const handleDrop = (event) => {
-  const tareaId = parseInt(event.dataTransfer.getData("tarea-id"));
-  emit("mover-tarea", { tareaId, nuevoEstado: props.estado });
+    handleDragStart(event, tareaId) {
+      event.dataTransfer.setData("tarea-id", tareaId);
+    },
+    handleDrop(event) {
+      const tareaId = parseInt(event.dataTransfer.getData("tarea-id"));
+      this.$emit("mover-tarea", { tareaId, nuevoEstado: this.estado });
+    },
+    calcularDiasRestantes,
+  },
 };
 </script>
+
 <style scoped>
 .board-column {
   display: flex;
@@ -41,7 +55,7 @@ const handleDrop = (event) => {
   padding: 0px;
   border: solid 1px #dee2e6;
   border-radius: 4px;
-  background-color: #f5dfbb;
+  background-color: #11bbb9;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 }
@@ -62,6 +76,8 @@ const handleDrop = (event) => {
   padding: 0.4rem;
 }
 .task {
+  display: flex;
+  flex-direction: column;
   background-color: #fff;
   padding: 10px;
   margin-bottom: 0px 10px;

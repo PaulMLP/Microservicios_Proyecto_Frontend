@@ -7,20 +7,25 @@
       @saved="saved"
       @refresh="recargarComponente"
     />
-    <div class="row" v-else>
-      <div class="col-12">
-        <card :title="table.title" :subTitle="table.subTitle">
-          <div slot="raw-content" class="table-responsive">
-            <data-table
-              :tableData="table.data"
-              :data="totalData || []"
-              :columns="table.columns"
-              @add="addResp"
-              @open="open"
-            >
-            </data-table>
-          </div>
-        </card>
+    <div v-else>
+      <div v-if="users_await" class="spinner-container">
+        <div class="spinner"></div>
+      </div>
+      <div class="row" v-else>
+        <div class="col-12">
+          <card :title="table.title" :subTitle="table.subTitle">
+            <div slot="raw-content" class="table-responsive">
+              <data-table
+                :tableData="table.data"
+                :data="totalData || []"
+                :columns="table.columns"
+                @add="addResp"
+                @open="open"
+              >
+              </data-table>
+            </div>
+          </card>
+        </div>
       </div>
     </div>
   </div>
@@ -41,6 +46,7 @@ export default {
   name: "Responsibles",
   data() {
     return {
+      users_await: false,
       edit: false,
       save: false,
       user: null,
@@ -86,12 +92,14 @@ export default {
       this.edit = !value;
     },
     async recargarComponente() {
+      this.users_await = true;
       this.totalData = [];
       this.table.data = [];
       console.log("Recargando componente...");
 
       this.totalData = await obtenerTodosUsuariosFachada("responsable");
       this.table.data = [...this.totalData];
+      this.users_await = false;
     },
   },
 };

@@ -4,7 +4,6 @@
       <a class="navbar-brand" :href="'#/' + $route.path.replace(/^\/+/, '')">
         {{ routeName }}
       </a>
-      <span>{{ userDB }}</span>
       <button
         class="navbar-toggler navbar-burger"
         type="button"
@@ -56,10 +55,17 @@ export default {
       nickname: this.$store.state.userInfo.preferred_username,
       name: this.$store.state.userInfo.given_name,
       email: this.$store.state.userInfo.email,
-      role: this.$store.state.userDbData.rol,
-      userDB: this.$store.state.userDbData,
+      role: "",
+      userDB: null,
     };
   },
+  mounted() {
+    try {
+      this.role =  this.$store.state.rol;
+      this.userDB = this.$store.state.userDbData;
+    } catch (error) {}
+  },
+
   methods: {
     capitalizeFirstLetter(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);

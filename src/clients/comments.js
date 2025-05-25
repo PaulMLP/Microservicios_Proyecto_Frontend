@@ -3,6 +3,8 @@ import store from "@/store";
 
 const API_URL = "http://localhost:7070/app-documentos/comentarios";
 
+const API_URL_EMAIL = "http://localhost:7070/app-documentos/email";
+
 const getAuthHeaders = () => ({
   Authorization: `Bearer ${store.getters.getToken}`,
 });
@@ -13,6 +15,10 @@ export const fetchComentariosFachada = async (id) => {
 
 export const createComentarioFachada = async (comentario) => {
   return await createComentario(comentario);
+};
+
+export const sendComentarioFachada = async (comentario) => {
+  return await sendComentario(comentario);
 };
 
 export const deleteComentarioFachada = async (id) => {
@@ -44,9 +50,19 @@ const createComentario = async (comentario) => {
   }
 };
 
-const deleteComentario = async (id) => {
-  console.log(`${API_URL}/${id}`);
+const sendComentario = async (mail) => {
+  try {
+    const data = await axios
+      .post(`${API_URL_EMAIL}/enviar`, mail, { headers: getAuthHeaders() })
+      .then((r) => r.data);
+    return data;
+  } catch (error) {
+    console.error("Error creating comment:", error);
+    throw error;
+  }
+};
 
+const deleteComentario = async (id) => {
   try {
     const data = await axios
       .delete(`${API_URL}/${id}`, { headers: getAuthHeaders() })

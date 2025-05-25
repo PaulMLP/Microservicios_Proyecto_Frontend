@@ -1,6 +1,6 @@
 <template>
   <Project v-if="show" :project="project" @exit="exit" />
-  <div class="row" v-else>
+  <div v-else class="row">
     <div class="col-12">
       <card :title="table.title" :subTitle="table.subTitle">
         <div slot="raw-content" class="table-responsive">
@@ -22,10 +22,10 @@
 import { DataTable } from "@/components";
 import Project from "./Projects/Project.vue";
 import {
-  fetchProyectosUsuarioFachada,
+  fetchMisTareasFachada,
   fetchProyectoIdFachada,
 } from "@/clients/projects.js";
-import { cambiarFecha } from "../utils/methods";
+import { cambiarFecha, calcularDiasRestantes } from "../utils/methods";
 export default {
   components: {
     DataTable,
@@ -35,15 +35,16 @@ export default {
     return {
       userDB: this.$store.state.userDbData,
       show: false,
+      task: null,
       project: null,
       totalData: [],
       tableColumns: [
-        { label: "ID", key: "id", width: "5%" },
-        { label: "Título", key: "titulo", width: "20%" },
-        { label: "Descripción", key: "descripcion", width: "35%" },
+        { label: "Descripción", key: "descripcion", width: "30%" },
+        { label: "Proyecto", key: "proyectoTitulo", width: "20%" },
         { label: "Estado", key: "estado", width: "10%" },
-        { label: "Fecha Inicio", key: "fechaInicio", width: "10%" },
-        { label: "Fecha Fin", key: "fechaFin", width: "10%" },
+        { label: "Fecha Inicio", key: "fechaAsignacion", width: "10%" },
+        { label: "Fecha Fin", key: "fechaVencimiento", width: "10%" },
+        { label: "Tiempo Restante", key: "diasRestantes", width: "20%" },
       ],
       table: {
         title: "",
@@ -54,16 +55,17 @@ export default {
     };
   },
   async mounted() {
-    this.totalData = await fetchProyectosUsuarioFachada(this.userDB.id);
+    this.totalData = await fetchMisTareasFachada(this.userDB.id);
 
-    this.totalData = this.totalData.map((proyecto) => ({
-      ...proyecto,
-      fechaInicio: cambiarFecha(proyecto.fechaInicio),
-      fechaFin: cambiarFecha(proyecto.fechaFin),
+    this.totalData = this.totalData.map((tarea) => ({
+      ...tarea,
+      diasRestantes: calcularDiasRestantes(tarea.fechaVencimiento),
+      fechaAsignacion: cambiarFecha(tarea.fechaAsignacion),
+      fechaVencimiento: cambiarFecha(tarea.fechaVencimiento),
     }));
 
     this.table = {
-      title: "Todos los Proyectos",
+      title: "Todos mis Tareas",
       subTitle: "",
       columns: [...this.tableColumns],
       data: [...this.totalData],
@@ -71,7 +73,7 @@ export default {
   },
   methods: {
     async open(item) {
-      await fetchProyectoIdFachada(item.id).then((response) => {
+      await fetchProyectoIdFachada(item.proyectoId).then((response) => {
         this.project = response;
       });
       if (this.project) {
@@ -85,4 +87,12 @@ export default {
   },
 };
 </script>
-<style></style>
+<style>
+/* 6gD:AE6?3U44
+
+Project Task
+projectasknotification@gmail.com
+
+zaer vzqg btgb nnmo
+*/
+</style>

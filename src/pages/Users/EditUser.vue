@@ -9,7 +9,7 @@
           <div class="col-md-6">
             <fg-input
               :required="true"
-              :disabled="userAux.username"
+              :disabled="userAux.id"
               type="text"
               label="Usuario"
               placeholder="Usuario"
@@ -74,7 +74,7 @@
             <span style="margin-left: 5px">Guardar</span>
           </p-button>
 
-          <p-button v-if="user" type="danger" @click.native.prevent="drop">
+          <p-button v-if="user" type="default" @click.native.prevent="drop">
             <span class="ti-trash"></span>
             <span style="margin-left: 5px">Eliminar</span>
           </p-button>
