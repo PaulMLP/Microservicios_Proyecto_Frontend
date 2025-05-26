@@ -14,6 +14,7 @@ import UsersList from "@/pages/UsersList.vue";
 import ProjectsList from "@/pages/ProjectsList.vue";
 import UserProjectsList from "@/pages/UserProjectsList.vue";
 import UserTasksList from "@/pages/UserTasksList.vue";
+import Agenda from "@/pages/Agenda.vue";
 
 const routes = [
   {
@@ -78,6 +79,12 @@ const routes = [
         path: "my-tasks",
         name: "Mis Tareas",
         component: UserTasksList,
+        meta: { allowedRoles: ["investigador", "responsable"] }, // Investigador y responsable
+      },
+      {
+        path: "my-agenda",
+        name: "Mi Agenda",
+        component: Agenda,
         meta: { allowedRoles: ["investigador", "responsable"] }, // Investigador y responsable
       },
     ],

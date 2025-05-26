@@ -33,6 +33,12 @@
           name="Mis Tareas"
           icon="ti-file"
         />
+        <sidebar-link
+          v-if="this.$store.state.rol !== 'admin'"
+          to="/my-agenda"
+          name="Mi Agenda"
+          icon="ti-book"
+        />
         <sidebar-link to="/typography" name="Typography" icon="ti-text" />
         <sidebar-link to="/icons" name="Icons" icon="ti-pencil-alt2" />
         <sidebar-link to="/notifications" name="Notifications" icon="ti-bell" />

@@ -151,6 +151,7 @@ import { obtenerTodosUsuariosFachada } from "@/clients/users.js";
 import {
   createProyectoFachada,
   updateProyectoFachada,
+  deleteProyectoFachada,
 } from "@/clients/projects.js";
 import { cambiarFecha } from "@/utils/methods.js";
 

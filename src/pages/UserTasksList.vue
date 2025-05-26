@@ -65,7 +65,7 @@ export default {
     }));
 
     this.table = {
-      title: "Todos mis Tareas",
+      title: "Todas mis Tareas",
       subTitle: "",
       columns: [...this.tableColumns],
       data: [...this.totalData],
