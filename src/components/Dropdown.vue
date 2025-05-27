@@ -13,17 +13,20 @@
     >
       <slot name="title">
         <i :class="icon"></i>
-        <span class="notification"
-          >{{ title }}
+        <span class="notification">
+          {{ title }}
           <b class="caret"></b>
         </span>
       </slot>
     </a>
-    <ul class="dropdown-menu" :class="{ show: isOpen }">
+
+    <!-- ✅ Aquí está el cambio importante -->
+    <ul class="dropdown-menu dropdown-menu-left" :class="{ show: isOpen }">
       <slot></slot>
     </ul>
   </component>
 </template>
+
 <script>
 export default {
   props: {
@@ -52,3 +55,17 @@ export default {
   },
 };
 </script>
+<style scoped>
+.dropdown-menu-left {
+  right: 0;
+  left: auto;
+  transform: translateX(-100%); /* Abre el menú hacia la izquierda */
+}
+
+.dropdown-menu {
+  max-width: 300px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+}
+</style>

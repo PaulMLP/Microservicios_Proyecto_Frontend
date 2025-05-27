@@ -92,6 +92,7 @@ import {
   eliminarUsuarioFachada,
   actualizarUsuarioFachada,
 } from "@/clients/users.js";
+import { sendEmailFachada } from "@/clients/email.js";
 export default {
   props: {
     role: String,
@@ -154,6 +155,24 @@ export default {
       }
     },
 
+    notificarInvestigadores(userSave) {
+      const mail = {
+        para: userSave.email,
+        asunto: "Usuario Creado con exito en Project Task",
+        mensaje:
+          "Se ha creado un nuevo usuario: " +
+          userSave.username +
+          "\n" +
+          "Por favor, inicia sesión con tu usuario y contraseña. \n el usuario es: " +
+          userSave.username +
+          "\n y la contraseña es: " +
+          userSave.password +
+          "\n",
+        servicio: "Proyecto_Tareas",
+      };
+      sendEmailFachada(mail);
+    },
+
     drop() {
       const resultado = confirm(
         "¿Estás seguro de que quieres eliminar el usuario?",
@@ -181,6 +200,7 @@ export default {
             // Usuario ya existe, muestra mensaje o emite estado de error
             this.$emit("saved", false); // o puedes emitir un mensaje personalizado
           } else {
+            this.notificarInvestigadores(this.userToSave);
             this.$emit("refresh");
             this.$emit("saved", true);
           }

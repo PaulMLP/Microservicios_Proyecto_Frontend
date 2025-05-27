@@ -8,7 +8,6 @@
           name="Dashboard"
           icon="ti-panel"
         />
-        <sidebar-link to="/stats" name="Perfil de Usuario" icon="ti-user" />
         <sidebar-link
           v-if="this.$store.state.rol === 'admin'"
           to="/users-list"
@@ -39,23 +38,25 @@
           name="Mi Agenda"
           icon="ti-book"
         />
-        <sidebar-link to="/typography" name="Typography" icon="ti-text" />
-        <sidebar-link to="/icons" name="Icons" icon="ti-pencil-alt2" />
-        <sidebar-link to="/notifications" name="Notifications" icon="ti-bell" />
       </template>
       <mobile-menu>
-        <li class="nav-item">
-          <a class="nav-link">
-            <i class="ti-panel"></i>
-            <p>Stats</p>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link">
-            <i class="ti-settings"></i>
-            <p>Settings</p>
-          </a>
-        </li>
+        <drop-down
+          class="nav-item"
+          :title="nickname"
+          title-classes="nav-link"
+          icon="ti-user"
+        >
+          <div>
+            <div class="info">
+              <p>{{ name }}</p>
+              <p>{{ email }}</p>
+              <p>{{ role }}</p>
+            </div>
+            <button class="dropdown-item" @click="logout">
+              <i class="ti-shift-left"></i>Salir
+            </button>
+          </div>
+        </drop-down>
         <li class="divider"></li>
       </mobile-menu>
     </side-bar>
@@ -70,6 +71,7 @@
 </template>
 <style lang="scss"></style>
 <script>
+import keycloak from "@/plugins/keycloak";
 import TopNavbar from "./TopNavbar.vue";
 import ContentFooter from "./ContentFooter.vue";
 import DashboardContent from "./Content.vue";
@@ -81,12 +83,46 @@ export default {
     DashboardContent,
     MobileMenu,
   },
+  data() {
+    return {
+      nickname: this.$store.state.userInfo.preferred_username,
+      name: this.$store.state.userInfo.given_name,
+      email: this.$store.state.userInfo.email,
+      role: "",
+      userDB: null,
+    };
+  },
+  mounted() {
+    try {
+      this.role = this.$store.state.rol;
+      this.userDB = this.$store.state.userDbData;
+    } catch (error) {}
+  },
+
   methods: {
     toggleSidebar() {
       if (this.$sidebar.showSidebar) {
         this.$sidebar.displaySidebar(false);
       }
     },
+    logout() {
+      this.$store.commit("setUserInfo", null);
+      this.$store.commit("setUserDbData", null);
+      keycloak.logout();
+    },
   },
 };
 </script>
+<style scoped>
+.info {
+  display: flex;
+  flex-direction: column;
+  padding: 3px 10px;
+  cursor: default;
+
+  p {
+    margin: 0px;
+    color: gray;
+  }
+}
+</style>

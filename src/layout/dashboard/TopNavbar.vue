@@ -36,7 +36,6 @@
           </drop-down>
         </ul>
       </div>
-      <div style="width: 70px"></div>
     </div>
   </nav>
 </template>
@@ -61,7 +60,7 @@ export default {
   },
   mounted() {
     try {
-      this.role =  this.$store.state.rol;
+      this.role = this.$store.state.rol;
       this.userDB = this.$store.state.userDbData;
     } catch (error) {}
   },
@@ -112,11 +111,5 @@ export default {
     margin: 0px;
     color: gray;
   }
-}
-
-#menu {
-  right: 0 !important;
-  left: auto !important;
-  border: solid 1px #9d1c1c;
 }
 </style>

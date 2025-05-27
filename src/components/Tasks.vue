@@ -4,7 +4,11 @@
   </div>
   <div v-else>
     <div v-if="!view_task" class="tasks">
-      <button id="button-agregar" @click="view_task = true">
+      <button
+        v-if="role === 'responsable'"
+        id="button-agregar"
+        @click="view_task = true"
+      >
         Agregar Tarea <span class="ti-plus"></span>
       </button>
       <h6 class="text-sm text-gray-600">
@@ -101,7 +105,7 @@ import {
   updateTareaFachada,
   deleteTareaFachada,
 } from "@/clients/projects.js";
-import { sendComentarioFachada } from "@/clients/comments.js";
+import { sendEmailFachada } from "@/clients/email.js";
 import { obtenerUsuarioFachada } from "@/clients/users.js";
 import { cambiarFecha } from "@/utils/methods";
 export default {
@@ -114,6 +118,8 @@ export default {
   },
   data() {
     return {
+      role: null,
+      userDB: null,
       estados: ["Pendiente", "En progreso", "Completado"],
       tasks_await: false,
       users_await: false,
@@ -127,6 +133,7 @@ export default {
     };
   },
   mounted() {
+    this.role = this.$store.state.rol;
     this.fetchAllTasks();
     this.usuariosProyecto = this.project.usuarios.filter(
       (user) => user.rol === "investigador",
@@ -156,13 +163,27 @@ export default {
         await createTareaFachada(tareaUpdate);
       }
       const mail = {
-        para: "merizaldeleo@gmail.com",
+        para: tareaUpdate,
         asunto: this.project.titulo,
         mensaje: tareaUpdate.descripcion,
+        servicio: "Proyecto_Tareas",
       };
-      sendComentarioFachada(mail);
+      this.notificarInvestigadores(tareaUpdate.descripcion);
+
       this.clean();
       this.fetchAllTasks();
+    },
+
+    notificarInvestigadores(cuerpo) {
+      this.tareaAux.usuarios.forEach((user) => {
+        const mail = {
+          para: user.correo,
+          asunto: this.project.titulo,
+          mensaje: cuerpo,
+          servicio: "Proyecto_Tareas",
+        };
+        sendEmailFachada(mail);
+      });
     },
 
     async drop() {
@@ -192,6 +213,12 @@ export default {
         tarea.estado = nuevoEstado;
       }
       updateTareaFachada(tarea);
+      this.notificarInvestigadores(
+        "La tarea: " +
+          tarea.descripcion +
+          " ha cambiado de estado a: " +
+          nuevoEstado,
+      );
     },
 
     async openTask(tarea) {

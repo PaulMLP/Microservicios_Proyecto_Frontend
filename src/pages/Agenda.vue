@@ -1,6 +1,11 @@
 <template>
   <div>
-    <button id="button-agregar" v-show="!show_form" @click="addEvent">
+    <button
+      v-if="role === 'responsable'"
+      id="button-agregar"
+      v-show="!show_form"
+      @click="addEvent"
+    >
       Agendar Evento <span class="ti-plus"></span>
     </button>
     <div v-if="!show_agenda" class="spinner-container">
@@ -142,6 +147,8 @@
 <script>
 import Multiselect from "vue-multiselect";
 import { obtenerTodosUsuariosFachada } from "@/clients/users.js";
+import { sendEmailFachada } from "@/clients/email.js";
+
 import {
   crearEventoFachada,
   fetchEventosAsignadosFachada,
@@ -209,6 +216,10 @@ export default {
         } else {
           await crearEventoFachada(eventoGuardar);
         }
+        this.notificarInvestigadores(
+          `Se ha agendado un nuevo evento: ${eventoGuardar.descripcion} \n
+          Empieza el ${this.formatDate(eventoGuardar.fechaInicio)} y termina el ${this.formatDate(eventoGuardar.fechaFin)}`,
+        );
         this.clean();
         this.show_form = false;
         this.fetchEvents();
@@ -216,6 +227,18 @@ export default {
         console.error("Error guardando evento:", error);
         alert("Error al agendar evento. Revisa la consola.");
       }
+    },
+
+    notificarInvestigadores(cuerpo) {
+      this.eventoAux.asignados.forEach((user) => {
+        const mail = {
+          para: user.correo,
+          asunto: this.eventoAux.titulo,
+          mensaje: cuerpo,
+          servicio: "Agenda_Eventos",
+        };
+        sendEmailFachada(mail);
+      });
     },
 
     async addEvent() {

@@ -3,7 +3,6 @@
     <button id="button-agregar" @click="formShow = true">
       Agregar Documento <span class="ti-plus"></span>
     </button>
-
     <!-- 
       FORMULARIO PARA AGREGAR DOCUMENTO
     -->
@@ -230,8 +229,8 @@ import {
   fetchComentariosFachada,
   createComentarioFachada,
   deleteComentarioFachada,
-  sendComentarioFachada,
 } from "@/clients/comments.js";
+import { sendEmailFachada } from "@/clients/email.js";
 import { cambiarFecha } from "@/utils/methods.js";
 
 export default {
@@ -286,12 +285,13 @@ export default {
       if (nuevoDocumento) {
         this.postDocument(nuevoDocumento);
         this.clean(false);
+        this.fetchAllDocs();
       }
     },
 
     async postDocument(doc) {
-      await createDocumentoFachada(doc);
       this.formShow = false;
+      await createDocumentoFachada(doc);
     },
 
     async deleteDoc(docId) {
@@ -326,16 +326,24 @@ export default {
         fechaCreacion: new Date().toISOString(),
       };
       await createComentarioFachada(comentario);
-
-      const mail = {
-        para: "merizaldeleo@gmail.com",
-        asunto: this.project.titulo,
-        mensaje: comentario.comentario,
-      };
-      sendComentarioFachada(mail);
+      this.notificarInvestigadores(comentario.comentario);
 
       this.fetchAllDocs();
       this.openComment = false;
+    },
+
+    notificarInvestigadores(comentario) {
+      this.project.usuarios
+        .filter((user) => user.id !== $store.state.userDbData.id)
+        .forEach((user) => {
+          const mail = {
+            para: user.correo,
+            asunto: this.project.titulo,
+            mensaje: comentario,
+            servicio: "Documentos_Comentarios",
+          };
+          sendEmailFachada(mail);
+        });
     },
 
     async combinarDocumentosConComentarios(documentos) {
