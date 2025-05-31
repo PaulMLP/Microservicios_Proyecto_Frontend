@@ -38,6 +38,16 @@ export const eliminarUsuarioFachada = async (usuario) => {
   return await eliminarUsuario(usuario);
 };
 
+export const contarUsuariosRolFachada = async () => {
+  return await contarUsuariosRol();
+};
+export const contarTodosUsuariosFachada = async () => {
+  return await contarTodosUsuarios();
+};
+export const contarUsuariosHoraFachada = async () => {
+  return await contarUsuariosHora();
+};
+
 /* Lógica interna */
 const obtenerTodosUsuarios = async (rol) => {
   const url = rol ? `${API_URL}?rol=${rol}` : API_URL;
@@ -113,6 +123,42 @@ const eliminarUsuario = async (id) => {
     return data;
   } catch (error) {
     console.error("Error deleting user:", error.message);
+    throw error;
+  }
+};
+
+const contarUsuariosRol = async () => {
+  try {
+    const data = await axios
+      .get(`${API_URL}/contar-por-rol`, { headers: getAuthHeaders() })
+      .then((r) => r.data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching count by rol users:", error.message);
+    throw error;
+  }
+};
+
+const contarTodosUsuarios = async () => {
+  try {
+    const data = await axios
+      .get(`${API_URL}/contar-todos`, { headers: getAuthHeaders() })
+      .then((r) => r.data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching count users:", error.message);
+    throw error;
+  }
+};
+
+const contarUsuariosHora = async () => {
+  try {
+    const data = await axios
+      .get(`${API_URL}/conteo-por-hora`, { headers: getAuthHeaders() })
+      .then((r) => r.data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching count users by time:", error.message);
     throw error;
   }
 };

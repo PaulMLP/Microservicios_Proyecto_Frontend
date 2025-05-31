@@ -31,6 +31,10 @@ export const deleteEventoFachada = async (id) => {
   return await deleteEvento(id);
 };
 
+export const contarTodosEventosFachada = async () => {
+  return await contarTodosEventos();
+};
+
 const crearEvento = async (evento) => {
   try {
     const data = await axios
@@ -102,6 +106,18 @@ const deleteEvento = async (id) => {
     return data;
   } catch (error) {
     console.error("Error deleting event:", error);
+    throw error;
+  }
+};
+
+const contarTodosEventos = async () => {
+  try {
+    const data = await axios
+      .get(`${API_URL}/contar-todos`, { headers: getAuthHeaders() })
+      .then((r) => r.data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching count agenda:", error.message);
     throw error;
   }
 };

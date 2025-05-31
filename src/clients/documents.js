@@ -23,6 +23,10 @@ export const deleteDocumentoFachada = async (id) => {
   return await deleteDocumento(id);
 };
 
+export const contarTodosArchivosFachada = async () => {
+  return await contarTodosArchivos();
+};
+
 const fetchDocumentos = async (id) => {
   const url = `${API_URL}/todos/${id}`;
   try {
@@ -70,6 +74,18 @@ const deleteDocumento = async (id) => {
     return data;
   } catch (error) {
     console.error("Error deleting document:", error);
+    throw error;
+  }
+};
+
+const contarTodosArchivos = async () => {
+  try {
+    const data = await axios
+      .get(`${API_URL}/contar-todos`, { headers: getAuthHeaders() })
+      .then((r) => r.data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching count projects:", error.message);
     throw error;
   }
 };

@@ -36,7 +36,7 @@
           v-if="this.$store.state.rol !== 'admin'"
           to="/my-agenda"
           name="Mi Agenda"
-          icon="ti-book"
+          icon="ti-agenda"
         />
       </template>
       <mobile-menu>

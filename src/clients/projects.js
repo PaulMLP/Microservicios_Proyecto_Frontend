@@ -58,6 +58,18 @@ export const deleteTareaFachada = async (id) => {
   return await deleteTarea(id);
 };
 
+export const contarTodosProyectosFachada = async () => {
+  return await contarTodosProyectos();
+};
+
+export const contarEstadosProyectosFachada = async () => {
+  return await contarEstadosProyectos();
+};
+
+export const contarProyectosMesFachada = async () => {
+  return await contarProyectosMes();
+};
+
 const fetchProyectos = async () => {
   try {
     const data = await axios
@@ -195,6 +207,42 @@ const deleteTarea = async (id) => {
     return data;
   } catch (error) {
     console.error("Error deleting tarea:", error);
+    throw error;
+  }
+};
+
+const contarTodosProyectos = async () => {
+  try {
+    const data = await axios
+      .get(`${API_URL}/contar-todos`, { headers: getAuthHeaders() })
+      .then((r) => r.data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching count projects:", error.message);
+    throw error;
+  }
+};
+
+const contarEstadosProyectos = async () => {
+  try {
+    const data = await axios
+      .get(`${API_URL}/contar-por-estado`, { headers: getAuthHeaders() })
+      .then((r) => r.data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching count projects:", error.message);
+    throw error;
+  }
+};
+
+const contarProyectosMes = async () => {
+  try {
+    const data = await axios
+      .get(`${API_URL}/conteo-por-mes`, { headers: getAuthHeaders() })
+      .then((r) => r.data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching count projects by time:", error.message);
     throw error;
   }
 };
