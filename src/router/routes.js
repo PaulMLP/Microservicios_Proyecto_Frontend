@@ -15,6 +15,7 @@ import ProjectsList from "@/pages/ProjectsList.vue";
 import UserProjectsList from "@/pages/UserProjectsList.vue";
 import UserTasksList from "@/pages/UserTasksList.vue";
 import Agenda from "@/pages/Agenda.vue";
+import NotAuthorized from "@/pages/NotAuthorized.vue";
 
 const routes = [
   {
@@ -23,9 +24,15 @@ const routes = [
     redirect: "/dashboard",
     children: [
       {
+        path: "/not-authorized",
+        name: "not-authorized",
+        component: NotAuthorized,
+      },
+      {
         path: "dashboard",
         name: "dashboard",
         component: Dashboard,
+        meta: { allowedRoles: ["admin"] },
       },
       {
         path: "stats",

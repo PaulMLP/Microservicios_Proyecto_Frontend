@@ -1,7 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import routes from "./routes";
-import store from "@/store"; // importa tu store para obtener el rol
+import store from "@/store"; // se usa para obtener el rol
 
 Vue.use(VueRouter);
 
@@ -10,20 +10,27 @@ const router = new VueRouter({
   linkActiveClass: "active",
 });
 
+// router.js
 router.beforeEach((to, from, next) => {
-  const allowedRoles = to.meta.allowedRoles;
-  const userRole = store.state.rol;
+  let userRole = store.state.rol;
 
-  if (!allowedRoles) {
-    // Ruta sin restricción, dejar pasar
-    next();
-  } else if (allowedRoles.includes(userRole)) {
-    // Rol permitido, permitir acceso
-    next();
-  } else {
-    // No permitido, redirigir o bloquear
-    next("/dashboard"); // por ejemplo, redirige al dashboard
+  // 🔁 Cargar desde localStorage si el store aún no tiene el rol (tras recargar)
+  if (!userRole) {
+    const storedRol = localStorage.getItem("rol");
+    if (storedRol) {
+      userRole = storedRol;
+      store.commit("setRol", storedRol);
+    }
   }
+
+  const allowedRoles = to.meta.allowedRoles;
+
+  if (!allowedRoles || allowedRoles.includes(userRole)) {
+    return next(); // ✅ Permitir acceso a la ruta solicitada
+  }
+
+  // 🚫 Si no tiene permiso
+  return next("/not-authorized");
 });
 
 export default router;

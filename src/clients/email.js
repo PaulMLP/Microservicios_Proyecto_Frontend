@@ -29,10 +29,9 @@ const sendEmail = async (mail) => {
 
 const getEmailRegistroCount = async () => {
   try {
-    const { data } = await axios.get(
-      `${API_URL}/email-registro/count`,
-      { headers: getAuthHeaders() }
-    );
+    const { data } = await axios.get(`${API_URL}/email-registro/count`, {
+      headers: getAuthHeaders(),
+    });
     return data; // Es un número
   } catch (error) {
     console.error("Error al obtener el conteo:", error);

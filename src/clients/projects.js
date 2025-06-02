@@ -26,6 +26,14 @@ export const fetchMisTareasFachada = async (id) => {
   return await fetchMisTareas(id);
 };
 
+export const fetchMisTareasRespFachada = async (id) => {
+  return await fetchMisTareasResp(id);
+};
+
+export const fetchIdsProjResponsableFachada = async (id) => {
+  return await fetchIdsProjResponsable(id);
+};
+
 export const fetchProyectoIdFachada = async (id) => {
   return await fetchProyectoId(id);
 };
@@ -101,6 +109,30 @@ const fetchMisTareas = async (id) => {
     return data;
   } catch (error) {
     console.error("Error fetching tasks:", error);
+    throw error;
+  }
+};
+
+const fetchMisTareasResp = async (id) => {
+  try {
+    const data = await axios
+      .get(`${API_URL_TAREA}/mis-tareas-responsable/${id}`, { headers: getAuthHeaders() })
+      .then((r) => r.data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching tasks:", error);
+    throw error;
+  }
+};
+
+const fetchIdsProjResponsable = async (id) => {
+  try {
+    const data = await axios
+      .get(`${API_URL}/proyectos-por-usuario/${id}`, { headers: getAuthHeaders() })
+      .then((r) => r.data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching tasks by responsable:", error);
     throw error;
   }
 };

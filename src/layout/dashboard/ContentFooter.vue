@@ -3,17 +3,20 @@
     <div class="container-fluid d-flex flex-wrap justify-content-between">
       <nav>
         <ul>
-          <li>
+          <li v-if="$store.state.rol === 'admin'">
             <router-link :to="{ path: '/dashboard' }">Dashboard</router-link>
           </li>
         </ul>
       </nav>
       <div class="copyright d-flex flex-wrap">
-        &copy; Coded with
-        <i class="fa fa-heart heart"></i> by
+        &copy;Codificado por
+        <a href="https://github.com/ErickSebas18" target="_blank">
+          &nbsp; Erick Chavez</a
+        >
+        &nbsp;y
         <a href="https://github.com/PaulMLP" target="_blank">
-          &nbsp; Paul Merizalde</a
-        >&nbsp; Designed by
+          &nbsp;Paul Merizalde</a
+        >&nbsp; Diseñado por
         <a href="https://www.creative-tim.com/?ref=pdf-vuejs" target="_blank"
           >&nbsp; Creative Tim.</a
         >

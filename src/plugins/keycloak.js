@@ -1,6 +1,7 @@
 import Keycloak from "keycloak-js";
 import store from "@/store";
 import axios from "axios";
+import router from "@/router";
 
 const keycloak = new Keycloak({
   url: "http://localhost:8080",
@@ -29,6 +30,15 @@ export const initKeycloak = () => {
             rol = rol.endsWith("_client") ? rol.replace("_client", "") : rol;
 
             store.commit("setUserRol", rol);
+
+            if (rol === "admin") {
+              router.push("/dashboard");
+            } else if (rol === "responsable" || rol === "investigador") {
+              router.push("/my-projects");
+            } else {
+              // si hay otro rol inesperado
+              router.push("/not-authorized");
+            }
 
             store.commit("setUserInfo", userInfo);
             store.commit("setToken", keycloak.token);
