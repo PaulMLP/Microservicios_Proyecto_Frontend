@@ -287,31 +287,47 @@ export default {
     };
   },
   async mounted() {
-    const [usuarios, proyectos, archivos, eventos] = await Promise.all([
-      contarTodosUsuariosFachada(),
-      contarTodosProyectosFachada(),
-      contarTodosArchivosFachada(),
-      contarTodosEventosFachada(),
-    ]);
+    try {
+      const [usuarios, proyectos, archivos, eventos] = await Promise.all([
+        contarTodosUsuariosFachada(),
+        contarTodosProyectosFachada(),
+        contarTodosArchivosFachada(),
+        contarTodosEventosFachada(),
+      ]);
 
-    this.usersCount = usuarios;
-    this.projectsCount = proyectos;
-    this.archivesCount = archivos;
-    this.eventsCount = eventos;
+      this.usersCount = usuarios ?? 0;
+      this.projectsCount = proyectos ?? 0;
+      this.archivesCount = archivos ?? 0;
+      this.eventsCount = eventos ?? 0;
 
-    const rolesCantidad = await contarUsuariosRolFachada();
-    if (rolesCantidad) {
-      this.users_rol = true;
+      const rolesCantidad = await contarUsuariosRolFachada();
+
+      if (rolesCantidad && typeof rolesCantidad === "object") {
+        const { responsable = 0, investigador = 0 } = rolesCantidad;
+
+        this.users_rol = true;
+
+        this.preferencesChart.data.labels = ["Responsable", "Investigador"];
+
+        this.preferencesChart.data.series = [responsable, investigador];
+      } else {
+        // No hay datos de roles, asignar vacíos para evitar errores en el gráfico
+        this.preferencesChart.data.labels = [];
+        this.preferencesChart.data.series = [];
+        this.users_rol = false;
+      }
+    } catch (error) {
+      console.error("Error al obtener datos del dashboard:", error);
+
+      // Asignar valores por defecto en caso de error
+      this.usersCount = 0;
+      this.projectsCount = 0;
+      this.archivesCount = 0;
+      this.eventsCount = 0;
+      this.preferencesChart.data.labels = [];
+      this.preferencesChart.data.series = [];
+      this.users_rol = false;
     }
-    this.preferencesChart.data.labels = [
-      rolesCantidad.responsable,
-      rolesCantidad.investigador,
-    ];
-
-    this.preferencesChart.data.series = [
-      rolesCantidad.responsable,
-      rolesCantidad.investigador,
-    ];
 
     const estados = await contarEstadosProyectosFachada();
     if (estados) {
