@@ -182,7 +182,11 @@ export default {
           mensaje: cuerpo,
           servicio: "Proyecto_Tareas",
         };
-        sendEmailFachada(mail);
+        try {
+          sendEmailFachada(mail);
+        } catch (error) {
+          console.log(error);
+        }
       });
     },
 

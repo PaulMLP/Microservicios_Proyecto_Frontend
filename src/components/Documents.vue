@@ -270,12 +270,12 @@ export default {
       }
     },
 
-    addDocument() {
+    async addDocument() {
       const nuevoDocumento = {
         nombre: this.documentAux.nombre,
         descripcion: this.documentAux.descripcion,
         tipo: this.fileInfo.tipo,
-        usuarioId: this.$store.state.userDbData.id,
+        usuarioId: $store.state.userDbData.id,
         proyectoId: this.project.id,
         fechaSubida: new Date().toISOString(),
         tamanio: this.fileInfo.tamano,
@@ -283,15 +283,11 @@ export default {
       };
 
       if (nuevoDocumento) {
-        this.postDocument(nuevoDocumento);
+        this.formShow = false;
+        await createDocumentoFachada(doc);
         this.clean(false);
         this.fetchAllDocs();
       }
-    },
-
-    async postDocument(doc) {
-      this.formShow = false;
-      await createDocumentoFachada(doc);
     },
 
     async deleteDoc(docId) {
@@ -342,7 +338,11 @@ export default {
             mensaje: comentario,
             servicio: "Documentos_Comentarios",
           };
-          sendEmailFachada(mail);
+          try {
+            sendEmailFachada(mail);
+          } catch (error) {
+            console.log(error);
+          }
         });
     },
 

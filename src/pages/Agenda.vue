@@ -237,7 +237,11 @@ export default {
           mensaje: cuerpo,
           servicio: "Agenda_Eventos",
         };
-        sendEmailFachada(mail);
+        try {
+          sendEmailFachada(mail);
+        } catch (error) {
+          console.log(error);
+        }
       });
     },
 

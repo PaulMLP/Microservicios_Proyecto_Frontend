@@ -23,7 +23,6 @@ const sendEmail = async (mail) => {
     return data;
   } catch (error) {
     console.error("Error creating comment:", error);
-    throw error;
   }
 };
 
@@ -35,6 +34,5 @@ const getEmailRegistroCount = async () => {
     return data; // Es un número
   } catch (error) {
     console.error("Error al obtener el conteo:", error);
-    throw error;
   }
 };

@@ -170,7 +170,11 @@ export default {
           "\n",
         servicio: "Proyecto_Tareas",
       };
-      sendEmailFachada(mail);
+      try {
+        sendEmailFachada(mail);
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     drop() {
