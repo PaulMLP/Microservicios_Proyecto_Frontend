@@ -30,6 +30,7 @@
     </div>
   </div>
 </template>
+
 <script>
 import { DataTable } from "@/components";
 import EditUser from "./EditUser.vue";
@@ -52,9 +53,13 @@ export default {
       user: null,
       totalData: [],
       tableColumns: [
-        { label: "Id", key: "id", width: "10%" },
-        { label: "Nombre", key: "nombre", width: "45%" },
-        { label: "Correo", key: "correo", width: "45%" },
+        { label: "Id", key: "id", width: "8%" },
+        { label: "Nombre", key: "nombre", width: "15%" },
+        { label: "Correo", key: "correo", width: "15%" },
+        { label: "Rol", key: "rol", width: "12%" },
+        { label: "Provincia", key: "provincia", width: "20%" },
+        { label: "Ciudad", key: "ciudad", width: "20%" },
+        { label: "Teléfono", key: "telefono", width: "10%" },
       ],
       table: {
         title: "",
@@ -65,7 +70,8 @@ export default {
     };
   },
   async created() {
-    this.totalData = await obtenerTodosUsuariosFachada("investigador");
+    let rawData = await obtenerTodosUsuariosFachada("investigador");
+    this.totalData = this.limpiarDatos(rawData);
     this.table = {
       title: "Investigadores",
       subTitle: "",
@@ -80,6 +86,8 @@ export default {
     },
     async open(item) {
       await obtenerUsuarioKeycloakFachada(item.correo).then((response) => {
+        console.log(response.data);
+
         this.user = response;
         this.user.id = item.id;
         this.user.rol = "investigador";
@@ -91,22 +99,35 @@ export default {
     saved(value) {
       this.edit = !value;
     },
-
     async recargarComponente() {
       this.users_await = true;
       this.totalData = [];
       this.table.data = [];
       console.log("Recargando componente...");
 
-      this.totalData = await obtenerTodosUsuariosFachada("investigador");
+      let rawData = await obtenerTodosUsuariosFachada("investigador");
+      this.totalData = this.limpiarDatos(rawData);
       this.table.data = [...this.totalData];
       if (this.totalData) {
         this.users_await = false;
       }
     },
+    limpiarDatos(dataArray) {
+      // Reemplaza null o undefined en campos específicos por ""
+      return dataArray.map((item) => ({
+        ...item,
+        provincia: item.provincia || "",
+        telefono: item.telefono || "",
+        nombre: item.nombre || "",
+        ciudad: item.ciudad || "",
+        // ultimoAcceso y activo no se muestran pero ultimoAcceso lo dejamos para la tabla
+        ultimoAcceso: item.ultimoAcceso || "",
+      }));
+    },
   },
 };
 </script>
+
 <style>
 .spinner-container {
   width: 100px;

@@ -38,6 +38,12 @@
           name="Mi Agenda"
           icon="ti-agenda"
         />
+        <sidebar-link
+          v-if="this.$store.state.rol !== 'admin'"
+          to="/userprofile"
+          name="Perfil de Usuario"
+          icon="ti-user"
+        />
       </template>
       <mobile-menu>
         <drop-down
@@ -71,6 +77,8 @@
 </template>
 <style lang="scss"></style>
 <script>
+import store from "@/store";
+import axios from "axios";
 import keycloak from "@/plugins/keycloak";
 import TopNavbar from "./TopNavbar.vue";
 import ContentFooter from "./ContentFooter.vue";
@@ -105,9 +113,19 @@ export default {
         this.$sidebar.displaySidebar(false);
       }
     },
-    logout() {
+    async logout() {
       this.$store.commit("setUserInfo", null);
       this.$store.commit("setUserDbData", null);
+      const API_URL = "http://localhost:7070/app-usuarios/usuarios";
+      if (this.role != "admin") {
+        const urlActivo = `${API_URL}/${this.userDB.id}/activo`;
+        await axios.put(urlActivo, JSON.stringify(false), {
+          headers: {
+            Authorization: `Bearer ${store.getters.getToken}`,
+            "Content-Type": "application/json",
+          },
+        });
+      }
       keycloak.logout();
     },
   },

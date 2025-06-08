@@ -1,0 +1,191 @@
+[
+  {
+    "nombre": "Azuay",
+    "ciudades": [
+      "Cuenca",
+      "Gualaceo",
+      "Paute",
+      "Girón"
+    ]
+  },
+  {
+    "nombre": "Bolívar",
+    "ciudades": [
+      "Guaranda",
+      "San Miguel",
+      "Chillanes"
+    ]
+  },
+  {
+    "nombre": "Cañar",
+    "ciudades": [
+      "Azogues",
+      "La Troncal",
+      "Biblián"
+    ]
+  },
+  {
+    "nombre": "Carchi",
+    "ciudades": [
+      "Tulcán",
+      "Mira",
+      "Montúfar"
+    ]
+  },
+  {
+    "nombre": "Chimborazo",
+    "ciudades": [
+      "Riobamba",
+      "Guano",
+      "Colta"
+    ]
+  },
+  {
+    "nombre": "Cotopaxi",
+    "ciudades": [
+      "Latacunga",
+      "La Maná",
+      "Pujilí"
+    ]
+  },
+  {
+    "nombre": "El Oro",
+    "ciudades": [
+      "Machala",
+      "Santa Rosa",
+      "Pasaje"
+    ]
+  },
+  {
+    "nombre": "Esmeraldas",
+    "ciudades": [
+      "Esmeraldas",
+      "Atacames",
+      "Quinindé"
+    ]
+  },
+  {
+    "nombre": "Galápagos",
+    "ciudades": [
+      "Puerto Ayora",
+      "Puerto Baquerizo Moreno"
+    ]
+  },
+  {
+    "nombre": "Guayas",
+    "ciudades": [
+      "Guayaquil",
+      "Daule",
+      "Samborondón",
+      "Milagro"
+    ]
+  },
+  {
+    "nombre": "Imbabura",
+    "ciudades": [
+      "Ibarra",
+      "Otavalo",
+      "Cotacachi"
+    ]
+  },
+  {
+    "nombre": "Loja",
+    "ciudades": [
+      "Loja",
+      "Catamayo",
+      "Macará"
+    ]
+  },
+  {
+    "nombre": "Los Ríos",
+    "ciudades": [
+      "Babahoyo",
+      "Quevedo",
+      "Vinces"
+    ]
+  },
+  {
+    "nombre": "Manabí",
+    "ciudades": [
+      "Portoviejo",
+      "Manta",
+      "Chone"
+    ]
+  },
+  {
+    "nombre": "Morona Santiago",
+    "ciudades": [
+      "Macas",
+      "Sucúa",
+      "Logroño"
+    ]
+  },
+  {
+    "nombre": "Napo",
+    "ciudades": [
+      "Tena",
+      "Archidona",
+      "El Chaco"
+    ]
+  },
+  {
+    "nombre": "Orellana",
+    "ciudades": [
+      "Francisco de Orellana"
+    ]
+  },
+  {
+    "nombre": "Pastaza",
+    "ciudades": [
+      "Puyo",
+      "Mera",
+      "Santa Clara"
+    ]
+  },
+  {
+    "nombre": "Pichincha",
+    "ciudades": [
+      "Quito",
+      "Cayambe",
+      "Mejía",
+      "Rumiñahui"
+    ]
+  },
+  {
+    "nombre": "Santa Elena",
+    "ciudades": [
+      "Santa Elena",
+      "La Libertad",
+      "Salinas"
+    ]
+  },
+  {
+    "nombre": "Santo Domingo",
+    "ciudades": [
+      "Santo Domingo"
+    ]
+  },
+  {
+    "nombre": "Sucumbíos",
+    "ciudades": [
+      "Nueva Loja",
+      "Shushufindi"
+    ]
+  },
+  {
+    "nombre": "Tungurahua",
+    "ciudades": [
+      "Ambato",
+      "Baños",
+      "Pelileo"
+    ]
+  },
+  {
+    "nombre": "Zamora Chinchipe",
+    "ciudades": [
+      "Zamora",
+      "Yantzaza",
+      "El Pangui"
+    ]
+  }
+]

@@ -35,8 +35,8 @@ const routes = [
         meta: { allowedRoles: ["admin"] },
       },
       {
-        path: "stats",
-        name: "estatisticas",
+        path: "userprofile",
+        name: "Perfil de Usuario",
         component: UserProfile,
       },
       {

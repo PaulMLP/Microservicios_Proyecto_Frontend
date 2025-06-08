@@ -40,6 +40,8 @@
   </nav>
 </template>
 <script>
+import axios from "axios";
+import store from "@/store";
 import keycloak from "@/plugins/keycloak";
 export default {
   computed: {
@@ -81,9 +83,24 @@ export default {
     hideSidebar() {
       this.$sidebar.displaySidebar(false);
     },
-    logout() {
+    async logout() {
       this.$store.commit("setUserInfo", null);
       this.$store.commit("setUserDbData", null);
+      if (this.role != "admin") {
+        console.log("Logging out...");
+        try {
+          const API_URL = "http://localhost:7070/app-usuarios/usuarios";
+          const urlActivo = `${API_URL}/${this.userDB.id}/activo`;
+          const res = await axios.put(urlActivo, JSON.stringify(false), {
+            headers: {
+              Authorization: `Bearer ${store.getters.getToken}`,
+              "Content-Type": "application/json",
+            },
+          });
+          console.log(res);
+        } catch (error) {}
+      }
+
       keycloak.logout();
     },
     adjustDropdownPosition(event) {

@@ -22,6 +22,10 @@ export const obtenerUsuarioFachada = async (id) => {
   return await obtenerUsuario(id);
 };
 
+export const obtenerUsuarioByMailFachada = async (id) => {
+  return await obtenerUsuarioByMail(id);
+};
+
 export const crearUsuarioFachada = async (usuario) => {
   return await crearUsuario(usuario);
 };
@@ -32,6 +36,10 @@ export const obtenerUsuarioKeycloakFachada = async (mail) => {
 
 export const actualizarUsuarioFachada = async (usuario) => {
   return await actualizarUsuario(usuario);
+};
+
+export const actualizarActivoFachada = async (id, activo) => {
+  return await actualizarActivo(id, activo);
 };
 
 export const eliminarUsuarioFachada = async (usuario) => {
@@ -88,6 +96,19 @@ const obtenerUsuario = async (id) => {
   }
 };
 
+const obtenerUsuarioByMail = async (mail) => {
+  const url = `${API_URL}/db/by-mail/${mail}`;
+  try {
+    const data = await axios
+      .get(url, { headers: getAuthHeaders() })
+      .then((r) => r.data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching user:", error.message);
+    throw error;
+  }
+};
+
 const crearUsuario = async (usuario) => {
   try {
     const data = await axios
@@ -110,6 +131,21 @@ const actualizarUsuario = async (usuario) => {
     return data;
   } catch (error) {
     console.error("Error updating user:", error.message);
+    throw error;
+  }
+};
+
+const actualizarActivo = async (id, activo) => {
+  try {
+    const url = `${API_URL}/${id}/activo`;
+    await axios.put(url, JSON.stringify(activo), {
+      headers: {
+        Authorization: `Bearer ${store.getters.getToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (error) {
+    console.error("Error updating user active:", error.message);
     throw error;
   }
 };

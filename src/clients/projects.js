@@ -132,7 +132,7 @@ const fetchIdsProjResponsable = async (id) => {
       .then((r) => r.data);
     return data;
   } catch (error) {
-    console.error("Error fetching tasks by responsable:", error);
+    console.error("Error fetching tasks by user:", error);
     throw error;
   }
 };

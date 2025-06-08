@@ -6,6 +6,24 @@
     </div>
 
     <p>{{ projectAux.descripcion }}</p>
+    <div class="info-users-container">
+      <div v-for="usuarioInfo in projectAux.usuarios">
+        <div class="infoUsers">
+          <span>
+            {{ usuarioInfo.nombre }} - {{ usuarioInfo.rol.toUpperCase() }}
+          </span>
+          <div class="userstatus">
+            <span
+              :class="[
+                'status-indicator',
+                usuarioInfo.activo === 'true' ? 'activo' : 'inactivo',
+              ]"
+            ></span>
+            {{ usuarioInfo.activo === "true" ? "Activo" : "Inactivo" }}
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Estado visual -->
     <div class="status" :class="estadoClase">
@@ -104,6 +122,39 @@ export default {
 </script>
 
 <style scoped>
+.info-users-container {
+  display: flex;
+  width: 100%;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.infoUsers {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #e8e8e8;
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+.status-indicator {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.status-indicator.activo {
+  background-color: green;
+}
+
+.status-indicator.inactivo {
+  background-color: red;
+}
+
 .card-header {
   display: flex;
   justify-content: space-between;

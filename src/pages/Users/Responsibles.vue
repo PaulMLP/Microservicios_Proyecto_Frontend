@@ -30,6 +30,7 @@
     </div>
   </div>
 </template>
+
 <script>
 import { DataTable } from "@/components";
 import EditUser from "./EditUser.vue";
@@ -52,9 +53,13 @@ export default {
       user: null,
       totalData: null,
       tableColumns: [
-        { label: "Id", key: "id", width: "10%" },
-        { label: "Nombre", key: "nombre", width: "45%" },
-        { label: "Correo", key: "correo", width: "45%" },
+        { label: "Id", key: "id", width: "8%" },
+        { label: "Nombre", key: "nombre", width: "15%" },
+        { label: "Correo", key: "correo", width: "15%" },
+        { label: "Rol", key: "rol", width: "12%" },
+        { label: "Provincia", key: "provincia", width: "20%" },
+        { label: "Ciudad", key: "ciudad", width: "20%" },
+        { label: "Teléfono", key: "telefono", width: "10%" },
       ],
       table: {
         title: "",
@@ -65,7 +70,8 @@ export default {
     };
   },
   async mounted() {
-    this.totalData = await obtenerTodosUsuariosFachada("responsable");
+    const rawData = await obtenerTodosUsuariosFachada("responsable");
+    this.totalData = this.limpiarDatos(rawData);
     this.table = {
       title: "Responsables",
       subTitle: "",
@@ -97,11 +103,50 @@ export default {
       this.table.data = [];
       console.log("Recargando componente...");
 
-      this.totalData = await obtenerTodosUsuariosFachada("responsable");
+      const rawData = await obtenerTodosUsuariosFachada("responsable");
+      this.totalData = this.limpiarDatos(rawData);
       this.table.data = [...this.totalData];
       this.users_await = false;
+    },
+    limpiarDatos(dataArray) {
+      // Reemplaza null o undefined en campos específicos por ""
+      return dataArray.map((item) => ({
+        ...item,
+        provincia: item.provincia || "",
+        telefono: item.telefono || "",
+        nombre: item.nombre || "",
+        ciudad: item.ciudad || "",
+        // omitimos activo y ultimoAcceso para no mostrar
+      }));
     },
   },
 };
 </script>
-<style></style>
+
+<style>
+.spinner-container {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #ccc;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+</style>

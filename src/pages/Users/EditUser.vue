@@ -4,7 +4,10 @@
       <button class="exit" @click="exit"><span class="ti-close"></span></button>
     </div>
     <div>
-      <form @submit.prevent>
+      <div v-if="update_await" class="spinner-container">
+        <div class="spinner"></div>
+      </div>
+      <form v-else @submit.prevent>
         <div class="row">
           <div class="col-md-6">
             <fg-input
@@ -53,6 +56,67 @@
         </div>
 
         <div class="row">
+          <div class="col-6">
+            <label>Provincia</label>
+            <select
+              class="form-control"
+              v-model="userAux.provincia"
+              @change="actualizarCiudades"
+            >
+              <option disabled value="">Selecciona una provincia</option>
+              <option
+                v-for="provincia in provincias"
+                :key="provincia.nombre"
+                :value="provincia.nombre"
+              >
+                {{ provincia.nombre }}
+              </option>
+            </select>
+          </div>
+
+          <div class="col-6">
+            <label>Ciudad</label>
+            <select
+              class="form-control"
+              v-model="userAux.ciudad"
+              :disabled="ciudadesFiltradas.length === 0"
+            >
+              <option disabled value="">Selecciona una ciudad</option>
+              <option
+                v-for="ciudad in ciudadesFiltradas"
+                :key="ciudad"
+                :value="ciudad"
+              >
+                {{ ciudad }}
+              </option>
+            </select>
+            <small class="text-danger">
+              {{ errors.ciudad }}
+            </small>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-6">
+            <fg-input
+              type="text"
+              label="Teléfono"
+              placeholder="Teléfono"
+              v-model="userAux.telefono"
+              :error="errors.telefono"
+            ></fg-input>
+          </div>
+          <div class="col-6">
+            <fg-input
+              type="text"
+              label="Último Acceso"
+              :disabled="true"
+              v-model="userAux.ultimoAcceso"
+            ></fg-input>
+          </div>
+        </div>
+
+        <div class="row">
           <div class="col-md-6">
             <fg-input
               :required="true"
@@ -64,7 +128,7 @@
             />
           </div>
         </div>
-
+        <small v-if="mensaje" class="text-danger">{{ mensaje }}</small>
         <div
           class="text-center"
           style="display: flex; justify-content: center; gap: 5px"
@@ -91,7 +155,14 @@ import {
   crearUsuarioFachada,
   eliminarUsuarioFachada,
   actualizarUsuarioFachada,
+  obtenerUsuarioByMailFachada,
 } from "@/clients/users.js";
+import { fetchIdsProjResponsableFachada } from "@/clients/projects.js";
+import {
+  fetchEventosCreadosFachada,
+  fetchEventosAsignadosFachada,
+} from "@/clients/agenda.js";
+
 import { sendEmailFachada } from "@/clients/email.js";
 export default {
   props: {
@@ -100,6 +171,9 @@ export default {
   },
   data() {
     return {
+      update_await: false,
+      provincias: [],
+      ciudadesFiltradas: [],
       userToSave: this.user,
       userAux: this.user || {
         username: null,
@@ -108,9 +182,39 @@ export default {
         email: "",
         password: "",
         rol: this.role,
+        telefono: "",
+        ciudad: "",
+        provincia: "",
+        ultimoAcceso: "",
+        activo: false,
       },
+      mensaje: "",
       errors: {},
     };
+  },
+  async mounted() {
+    const response = await fetch("/data/provincias.json");
+    this.provincias = await response.json();
+    if (this.userAux.id) {
+      const userDB = await obtenerUsuarioByMailFachada(this.userAux.email);
+      this.userAux = {
+        id: this.user.id,
+        username: this.userAux.username,
+        firstName: this.userAux.firstName,
+        lastName: this.userAux.lastName,
+        email: this.userAux.email,
+        rol: this.role,
+        telefono: userDB.telefono || "",
+        ciudad: userDB.ciudad || "",
+        provincia: userDB.provincia || "",
+        ultimoAcceso: userDB.ultimoAcceso || "",
+        activo: userDB.activo || false,
+      };
+
+      if (this.userAux.provincia) {
+        this.actualizarCiudades();
+      }
+    }
   },
   methods: {
     save() {
@@ -142,6 +246,12 @@ export default {
         this.errors.email = "El correo no debe contener espacios.";
       }
 
+      if (this.userAux.provincia) {
+        if (!this.userAux.ciudad) {
+          this.errors.ciudad = "Ciudad es requerido.";
+        }
+      }
+
       if (Object.keys(this.errors).length > 0) {
         return; // Hay errores, no continuar
       }
@@ -150,7 +260,7 @@ export default {
       if (!this.userToSave) {
         this.postUser();
       } else {
-        console.log(this.userToSave);
+        this.update_await = true;
         this.updateUser();
       }
     },
@@ -182,7 +292,9 @@ export default {
         "¿Estás seguro de que quieres eliminar el usuario?",
       );
       if (resultado) {
+        this.update_await = true;
         this.deleteUser();
+        this.update_await = false;
       }
     },
 
@@ -194,6 +306,11 @@ export default {
         email: this.userAux.email,
         password: this.userAux.username,
         rol: this.role,
+        telefono: this.userAux.telefono,
+        ciudad: this.userAux.ciudad,
+        provincia: this.userAux.provincia,
+        ultimoAcceso: this.userAux.ultimoAcceso,
+        activo: this.userAux.activo,
       };
 
       try {
@@ -217,17 +334,24 @@ export default {
 
     async updateUser() {
       this.userToSave = {
+        id: this.userToSave.id,
         username: this.userAux.username,
         firstName: this.userAux.firstName,
         lastName: this.userAux.lastName,
         email: this.userAux.email,
-        password: this.userAux.password,
         rol: this.role,
+        telefono: this.userAux.telefono,
+        ciudad: this.userAux.ciudad,
+        provincia: this.userAux.provincia,
+        ultimoAcceso: this.userAux.ultimoAcceso,
+        activo: this.userAux.activo,
       };
-      try {
-        await actualizarUsuarioFachada(this.userAux);
 
-        // Solo emitir después de actualizar con éxito
+      try {
+        await actualizarUsuarioFachada(this.userToSave);
+
+        // Solo emitir después de actualizar con éxito\
+        this.update_await = true;
         this.$emit("refresh");
         this.$emit("saved", true);
       } catch (error) {
@@ -237,6 +361,32 @@ export default {
     },
 
     async deleteUser() {
+      try {
+        const projects = await fetchIdsProjResponsableFachada(this.userAux.id);
+        if (projects.length > 0) {
+          this.mensaje =
+            "El usuario no se puede eliminar ya que tiene proyectos asignados";
+          return;
+        }
+      } catch (error) {
+        console.error("Error al buscar proyectos el usuario:", error);
+      }
+
+      try {
+        console.log(this.role);
+        let agendados = null;
+        if (this.role === "responsable") {
+          agendados = fetchEventosCreadosFachada(this.userAux.id);
+        }
+        if (this.role === "investigador") {
+          agendados = fetchEventosAsignadosFachada(this.userAux.id);
+        }
+        if (agendados.length > 0) {
+          this.mensaje =
+            "El usuario no se puede eliminar ya que tiene eventos asignados";
+          return;
+        }
+      } catch (error) {}
       try {
         await eliminarUsuarioFachada(this.userAux.id);
 
@@ -271,6 +421,19 @@ export default {
         password: "",
         rol: this.role,
       };
+    },
+    actualizarCiudades() {
+      const provinciaSeleccionada = this.provincias.find(
+        (p) => p.nombre === this.userAux.provincia,
+      );
+      this.ciudadesFiltradas = provinciaSeleccionada
+        ? provinciaSeleccionada.ciudades
+        : [];
+
+      // Solo limpiar la ciudad si ya no pertenece a la provincia seleccionada
+      if (!this.ciudadesFiltradas.includes(this.userAux.ciudad)) {
+        this.userAux.ciudad = "";
+      }
     },
   },
 };

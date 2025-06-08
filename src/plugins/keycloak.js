@@ -34,6 +34,30 @@ export const initKeycloak = () => {
             if (rol === "admin") {
               router.push("/dashboard");
             } else if (rol === "responsable" || rol === "investigador") {
+              // Llamar a backend para obtener datos extendidos del usuario
+              const email = userInfo.email;
+              const token = keycloak.token;
+
+              const url = `${API_URL}/db/by-mail/${email}`;
+              const headers = { Authorization: `Bearer ${token}` };
+
+              let response = await axios.get(url, { headers });
+
+              const urlLastTime = `${API_URL}/${response.data.id}/ultimo-acceso`;
+              await axios.put(urlLastTime, {}, { headers });
+
+              const urlActivo = `${API_URL}/${response.data.id}/activo`;
+              const res = await axios.put(urlActivo, JSON.stringify(true), {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  "Content-Type": "application/json",
+                },
+              });
+              console.log(res.data);
+
+              response = await axios.get(url, { headers });
+              store.commit("setUserDbData", response.data);
+
               router.push("/my-projects");
             } else {
               // si hay otro rol inesperado
@@ -42,16 +66,6 @@ export const initKeycloak = () => {
 
             store.commit("setUserInfo", userInfo);
             store.commit("setToken", keycloak.token);
-
-            // Llamar a backend para obtener datos extendidos del usuario
-            const email = userInfo.email;
-            const token = keycloak.token;
-
-            const url = `${API_URL}/db/by-mail/${email}`;
-            const headers = { Authorization: `Bearer ${token}` };
-
-            const response = await axios.get(url, { headers });
-            store.commit("setUserDbData", response.data);
 
             // Renovar token periódicamente
             setInterval(() => {

@@ -7,26 +7,22 @@
       <div class="author">
         <img
           class="avatar border-white"
-          src="@/assets/img/faces/face-2.jpg"
+          src="@/assets/img/faces/face-0.jpg"
           alt="..."
         />
         <h4 class="title">
-          Chet Faker
+          {{ name }}
           <br />
           <a href="#">
-            <small>@chetfaker</small>
+            <small>{{ mail }}</small>
           </a>
         </h4>
       </div>
-      <p class="description text-center">
-        "I like the way you work it
-        <br />
-        No diggity <br />
-        I wanna bag it up"
-      </p>
+      <p class="description text-center"></p>
     </div>
     <hr />
     <div class="text-center">
+      <span>{{ role.toUpperCase() }}</span>
       <div class="row">
         <div
           v-for="(info, index) in details"
@@ -47,21 +43,19 @@
 export default {
   data() {
     return {
-      details: [
-        {
-          title: "12",
-          subTitle: "Files",
-        },
-        {
-          title: "2GB",
-          subTitle: "Used",
-        },
-        {
-          title: "24,6$",
-          subTitle: "Spent",
-        },
-      ],
+      name: "",
+      mail: "",
+      role: "",
+      details: [],
     };
+  },
+  mounted() {
+    try {
+      this.role = this.$store.state.rol;
+      this.name = this.$store.state.userDbData.nombre;
+      this.mail = this.$store.state.userInfo.email;
+      console.log(this.name);
+    } catch (error) {}
   },
   methods: {
     getClasses(index) {
