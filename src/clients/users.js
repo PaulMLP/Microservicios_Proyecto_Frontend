@@ -4,7 +4,7 @@ import store from "@/store";
 /**
  * URL de la API para gestionar los usuarios.
  */
-const API_URL = "http://localhost:7070/app-usuarios/usuarios";
+const API_URL = process.env.VUE_APP_USUARIOS_API_URL;
 
 /**
  * Retorna los headers con el token actual de Vuex.

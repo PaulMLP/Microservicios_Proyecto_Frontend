@@ -1,7 +1,7 @@
 import axios from "axios";
 import store from "@/store";
 
-const API_URL = "http://localhost:7070/app-documentos/documentos";
+const API_URL = process.env.VUE_APP_DOCUMENTOS_API_URL;
 
 const getAuthHeaders = () => ({
   Authorization: `Bearer ${store.getters.getToken}`,

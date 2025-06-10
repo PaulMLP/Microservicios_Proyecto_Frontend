@@ -4,8 +4,12 @@ import store from "@/store";
 /**
  * URL de la API para gestionar los usuarios.
  */
-const API_URL = "http://localhost:7070/app-proyectos/proyectos";
-const API_URL_TAREA = "http://localhost:7070/app-proyectos/tareas";
+// URL base del servicio de proyectos (definida en .env)
+const API_URL = process.env.VUE_APP_PROYECTOS_API_URL;
+
+// URL base del servicio de tareas (definida en .env)
+const API_URL_TAREA = process.env.VUE_APP_TAREAS_API_URL;
+
 
 /**
  * Retorna los headers con el token actual de Vuex.

@@ -116,7 +116,7 @@ export default {
     async logout() {
       this.$store.commit("setUserInfo", null);
       this.$store.commit("setUserDbData", null);
-      const API_URL = "http://localhost:7070/app-usuarios/usuarios";
+      const API_URL = process.env.VUE_APP_USUARIOS_API_URL;
       if (this.role != "admin") {
         const urlActivo = `${API_URL}/${this.userDB.id}/activo`;
         await axios.put(urlActivo, JSON.stringify(false), {

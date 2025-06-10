@@ -89,7 +89,7 @@ export default {
       if (this.role != "admin") {
         console.log("Logging out...");
         try {
-          const API_URL = "http://localhost:7070/app-usuarios/usuarios";
+          const API_URL = process.env.VUE_APP_USUARIOS_API_URL;
           const urlActivo = `${API_URL}/${this.userDB.id}/activo`;
           const res = await axios.put(urlActivo, JSON.stringify(false), {
             headers: {

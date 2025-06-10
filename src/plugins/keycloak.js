@@ -3,13 +3,15 @@ import store from "@/store";
 import axios from "axios";
 import router from "@/router";
 
+console.log(process.env.VUE_APP_KEYCLOAK_URL);
+
 const keycloak = new Keycloak({
-  url: "http://localhost:8080",
-  realm: "spring-boot-realm",
-  clientId: "spring-client-api-rest",
+  url: process.env.VUE_APP_KEYCLOAK_URL,
+  realm: process.env.VUE_APP_KEYCLOAK_REALM,
+  clientId: process.env.VUE_APP_KEYCLOAK_CLIENT_ID,
 });
 
-const API_URL = "http://localhost:7070/app-usuarios/usuarios";
+const API_URL = process.env.VUE_APP_USUARIOS_API_URL;
 
 export const initKeycloak = () => {
   return new Promise((resolve, reject) => {
