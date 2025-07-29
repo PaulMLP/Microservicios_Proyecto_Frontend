@@ -32,3 +32,6 @@ jobs:
 
       - name: 🔹 Desplegar frontend en AKS
         run: kubectl apply -f app-frontend.yml
+
+      - name: 🔹 Forzar redeploy de los pods
+        run: kubectl rollout restart app-frontend
