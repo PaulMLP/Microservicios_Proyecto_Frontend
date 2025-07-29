@@ -34,4 +34,4 @@ jobs:
         run: kubectl apply -f app-frontend.yml
 
       - name: 🔹 Forzar redeploy de los pods
-        run: kubectl rollout restart app-frontend
+        run: kubectl rollout restart deployment app-frontend
