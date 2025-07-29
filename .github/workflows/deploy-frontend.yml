@@ -24,7 +24,7 @@ jobs:
         run: |
           IMAGE_NAME="projectint.azurecr.io/app-frontend:latest"
           echo "Building $IMAGE_NAME"
-          docker build -t $IMAGE_NAME ./frontend
+          docker build -t $IMAGE_NAME .
           docker push $IMAGE_NAME
 
       - name: 🔹 Configurar credenciales de Kubernetes
