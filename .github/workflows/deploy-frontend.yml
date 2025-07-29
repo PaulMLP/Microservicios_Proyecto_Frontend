@@ -31,4 +31,4 @@ jobs:
         run: az aks get-credentials --resource-group ProyectoIntegrador --name clusterProyecto
 
       - name: 🔹 Desplegar frontend en AKS
-        run: kubectl apply -f k8s/frontend.yml
+        run: kubectl apply -f app-frontend.yml
