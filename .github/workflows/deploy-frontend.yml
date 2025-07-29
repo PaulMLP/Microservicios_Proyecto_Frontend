@@ -28,7 +28,7 @@ jobs:
           docker push $IMAGE_NAME
 
       - name: 🔹 Configurar credenciales de Kubernetes
-        run: az aks get-credentials --resource-group ProyectoIntegrador --name proyectoCluster
+        run: az aks get-credentials --resource-group ProyectoIntegrador --name clusterProyecto
 
       - name: 🔹 Desplegar frontend en AKS
         run: kubectl apply -f k8s/frontend.yml
