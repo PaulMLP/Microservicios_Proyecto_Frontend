@@ -1,0 +1,34 @@
+name: Deploy Frontend to Azure AKS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🔹 Checkout del código
+        uses: actions/checkout@v3
+
+      - name: 🔹 Login en Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: 🔹 Login en Azure Container Registry (ACR)
+        run: az acr login --name projectint
+
+      - name: 🔹 Construir imagen Docker del frontend
+        run: |
+          IMAGE_NAME="projectint.azurecr.io/app-frontend:latest"
+          echo "Building $IMAGE_NAME"
+          docker build -t $IMAGE_NAME ./frontend
+          docker push $IMAGE_NAME
+
+      - name: 🔹 Configurar credenciales de Kubernetes
+        run: az aks get-credentials --resource-group ProyectoIntegrador --name proyectoCluster
+
+      - name: 🔹 Desplegar frontend en AKS
+        run: kubectl apply -f k8s/frontend.yml
