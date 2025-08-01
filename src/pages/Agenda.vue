@@ -44,8 +44,8 @@
             <div class="col-6">
               <fg-input
                 type="datetime-local"
-                label="Fecha Vencimiento"
-                placeholder="Fecha Vencimiento"
+                label="Fecha Inicio"
+                placeholder="Fecha Inicio"
                 v-model="eventoAux.fechaInicio"
                 required
               />
@@ -134,7 +134,7 @@
             <template #footer>
               <div>
                 <p>
-                  {{ calcularDiasRestantes(evento.fechaInicio) }}
+                  {{ calcularDiasRestantes(evento.fechaFin) }}
                 </p>
               </div>
             </template>
@@ -201,10 +201,9 @@ export default {
       try {
         // Construir usuarioIds
         const investigadoresIds = this.eventoAux.asignados.map((inv) => inv.id);
-
+        const asignados = this.eventoAux.asignados;
         // Crear objeto limpio para guardar
         const eventoGuardar = this.eventoAux;
-
         eventoGuardar.usuarioId = this.userId;
         eventoGuardar.asignados = investigadoresIds;
 
@@ -219,6 +218,7 @@ export default {
         this.notificarInvestigadores(
           `Se ha agendado un nuevo evento: ${eventoGuardar.descripcion} \n
           Empieza el ${this.formatDate(eventoGuardar.fechaInicio)} y termina el ${this.formatDate(eventoGuardar.fechaFin)}`,
+          asignados,
         );
         this.clean();
         this.show_form = false;
@@ -229,8 +229,8 @@ export default {
       }
     },
 
-    notificarInvestigadores(cuerpo) {
-      this.eventoAux.asignados.forEach((user) => {
+    notificarInvestigadores(cuerpo, asignados) {
+      asignados.forEach((user) => {
         const mail = {
           para: user.correo,
           asunto: this.eventoAux.titulo,
@@ -361,7 +361,11 @@ export default {
       const ahora = new Date();
       const vencimiento = new Date(fechaFin);
 
+      console.log(`Fecha de vencimiento: ${vencimiento}`);
+      console.log(`Fecha actual: ${ahora}`);
+
       const diferenciaMs = vencimiento - ahora;
+      console.log(`Diferencia en milisegundos: ${diferenciaMs}`);
 
       if (diferenciaMs < 0) {
         // Evento ya pasó, mostramos días y horas desde que terminó

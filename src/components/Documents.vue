@@ -1,11 +1,11 @@
 <template>
   <div>
+    <!-- BOTÓN PARA ABRIR FORMULARIO -->
     <button id="button-agregar" @click="formShow = true">
       Agregar Documento <span class="ti-plus"></span>
     </button>
-    <!-- 
-      FORMULARIO PARA AGREGAR DOCUMENTO
-    -->
+
+    <!-- FORMULARIO PARA AGREGAR DOCUMENTO -->
     <card v-if="formShow" class="card">
       <div class="card-header">
         <button class="exit" @click="exit">
@@ -15,6 +15,7 @@
 
       <div>
         <form @submit.prevent="addDocument">
+          <!-- Nombre -->
           <div class="row">
             <div class="col-md-8">
               <fg-input
@@ -27,11 +28,13 @@
             </div>
           </div>
 
+          <!-- Descripción -->
           <div class="row mt-3">
             <div class="col-md-12">
               <div class="form-group">
-                <label>Descripción</label>
+                <label for="descripcion">Descripción</label>
                 <textarea
+                  id="descripcion"
                   rows="5"
                   class="form-control border-input"
                   placeholder="Aquí puede estar la descripción"
@@ -41,6 +44,8 @@
               </div>
             </div>
           </div>
+
+          <!-- Subida de archivo -->
           <div class="row mt-3">
             <div v-if="!fileInfo" class="col-md-4">
               <div class="form-group">
@@ -56,8 +61,7 @@
                   class="btn btn-primary"
                   @click="$refs.fileInput.click()"
                 >
-                  <span class="ti-file"></span> Archivo
-                  <span class="ti-plus"></span>
+                  <span class="ti-file"></span> Archivo <span class="ti-plus"></span>
                 </button>
                 <div v-if="fileError" class="text-danger mt-2">
                   {{ fileError }}
@@ -68,76 +72,51 @@
             <!-- Vista previa del archivo -->
             <div v-else class="col-md-6">
               <div class="card mt-3 p-2 d-flex flex-row align-items-center">
-                <span
-                  class="me-5 ti-file text-muted"
-                  style="font-size: 1.5rem"
-                ></span>
-
+                <span class="me-5 ti-file text-muted" style="font-size: 1.5rem"></span>
                 <div class="flex-grow-1">
-                  <div
-                    class="text-muted d-flex flex-column"
-                    style="font-size: 0.9rem"
-                  >
-                    <span
-                      >{{ fileInfo.nombre }} -
-                      {{ (fileInfo.tamano / 1024).toFixed(1) }} KB</span
-                    >
+                  <div class="text-muted d-flex flex-column" style="font-size: 0.9rem">
+                    <span>
+                      {{ fileInfo.nombre }} - {{ (fileInfo.tamano / 1024).toFixed(1) }} KB
+                    </span>
                   </div>
                 </div>
-
-                <button
-                  class="btn btn-sm btn-outline-danger ms-2"
-                  @click="deleteFile"
-                >
+                <button class="btn btn-sm btn-outline-danger ms-2" @click="deleteFile">
                   <span class="ti-close"></span>
                 </button>
               </div>
             </div>
           </div>
 
-          <div
-            class="text-center mt-4"
-            style="display: flex; justify-content: center; gap: 5px"
-          >
+          <!-- Botones Guardar / Limpiar -->
+          <div class="text-center mt-4 d-flex justify-content-center" style="gap: 10px">
             <p-button type="info" native-type="submit">
-              <span class="ti-save"></span>
-              <span style="margin-left: 5px">Guardar</span>
+              <span class="ti-save"></span> <span class="ms-1">Guardar</span>
             </p-button>
-
             <p-button type="danger" @click.native.prevent="clean">
-              <span class="ti-trash"></span>
-              <span style="margin-left: 5px">Limpiar</span>
+              <span class="ti-trash"></span> <span class="ms-1 ml-2">Limpiar</span>
             </p-button>
           </div>
-          <div class="clearfix"></div>
         </form>
       </div>
     </card>
 
-    <!-- 
-      LISTADO DE DOCUMENTOS
-    -->
+    <!-- LISTADO DE DOCUMENTOS -->
     <div v-if="docs_await" class="spinner-container">
       <div class="spinner"></div>
     </div>
 
     <div v-else class="row documents">
-      <div class="col-md-12 col-xl-6" v-for="doc in doc_comm">
+      <div class="col-md-12 col-xl-6" v-for="doc in doc_comm" :key="doc.id">
         <div v-if="doc_await" class="spinner-container">
           <div class="spinner"></div>
         </div>
+
         <div v-else class="doc-card">
+          <!-- Header -->
           <div class="doc-header">
-            <div
-              class="d-flex flex-column"
-              style="
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                max-height: 50px;
-              "
-            >
-              <span>{{ doc.nombre }}</span> <span>{{ doc.descripcion }}</span>
+            <div class="d-flex flex-column text-truncate" style="max-height: 50px">
+              <span>{{ doc.nombre }}</span>
+              <span>{{ doc.descripcion }}</span>
             </div>
             <div>
               <button class="exit" @click="deleteDoc(doc.id)">
@@ -145,6 +124,8 @@
               </button>
             </div>
           </div>
+
+          <!-- Contenido del documento -->
           <div class="doc-content row">
             <div class="content-left col-md-4">
               <span
@@ -161,12 +142,16 @@
                 Comentar
               </button>
             </div>
+
+            <!-- Comentarios -->
             <div class="content-right col-md-8">
+              <!-- Formulario de comentario -->
               <div v-if="openComment" class="row">
                 <div class="col-md-12 mb-0">
                   <div class="form-group">
-                    <label>Comentario</label>
+                    <label for="comentario">Comentario</label>
                     <textarea
+                      id="comentario"
                       rows="2"
                       class="form-control border-input"
                       placeholder="Comentario..."
@@ -175,42 +160,39 @@
                     ></textarea>
                   </div>
                 </div>
-                <div
-                  class="col-md-12 d-flex justify-content-center mt-0"
-                  style="padding: 0px; margin: 0; gap: 10px"
-                >
-                  <button class="comment-btn m-0" @click="comment(doc.id)">
+                <div class="col-md-12 d-flex justify-content-center mt-0" style="gap: 10px">
+                  <button class="comment-btn" @click="comment(doc.id)">
                     <span class="ti-check"></span> Listo
                   </button>
                   <button
-                    class="comment-btn m-0"
+                    class="comment-btn"
                     style="background-color: #d5d5d5"
-                    @click="
-                      openComment = false;
-                      comentarioAux = null;
-                    "
+                    @click="openComment = false; comentarioAux = null"
                   >
                     <span class="ti-close"></span> Cancelar
                   </button>
                 </div>
               </div>
-              <div v-else class="comment" v-for="comentario in doc.comentarios">
-                <div class="comment-header">
-                  <button class="exit" @click="deleteComment(comentario.id)">
-                    <span class="ti-trash"></span>
-                  </button>
-                </div>
 
-                <div class="comment-content">
-                  {{ comentario.comentario }}
+              <!-- Comentarios existentes -->
+              <template v-if="!openComment">
+                <div class="comment" v-for="comentario in doc.comentarios" :key="comentario.id">
+                  <div class="comment-header">
+                    <button class="exit" @click="deleteComment(comentario.id)">
+                      <span class="ti-trash"></span>
+                    </button>
+                  </div>
+                  <div class="comment-content">{{ comentario.comentario }}</div>
+                  <div class="comment-footer">
+                    <span>{{ comentario.usuarioNombre }}</span>
+                    <span>{{ cambiarFecha(comentario.fechaCreacion) }}</span>
+                  </div>
                 </div>
-                <div class="comment-footer">
-                  <span>{{ comentario.usuarioNombre }}</span>
-                  <span>{{ cambiarFecha(comentario.fechaCreacion) }}</span>
-                </div>
-              </div>
+              </template>
             </div>
           </div>
+
+          <!-- Footer -->
           <div class="doc-footer">{{ cambiarFecha(doc.fechaSubida) }}</div>
         </div>
       </div>
@@ -275,7 +257,7 @@ export default {
         nombre: this.documentAux.nombre,
         descripcion: this.documentAux.descripcion,
         tipo: this.fileInfo.tipo,
-        usuarioId: $store.state.userDbData.id,
+        usuarioId: this.$store.state.userDbData.id,
         proyectoId: this.project.id,
         fechaSubida: new Date().toISOString(),
         tamanio: this.fileInfo.tamano,
@@ -284,7 +266,7 @@ export default {
 
       if (nuevoDocumento) {
         this.formShow = false;
-        await createDocumentoFachada(doc);
+        await createDocumentoFachada(nuevoDocumento);
         this.clean(false);
         this.fetchAllDocs();
       }
@@ -330,7 +312,7 @@ export default {
 
     notificarInvestigadores(comentario) {
       this.project.usuarios
-        .filter((user) => user.id !== $store.state.userDbData.id)
+        .filter((user) => user.id !== this.$store.state.userDbData.id)
         .forEach((user) => {
           const mail = {
             para: user.correo,

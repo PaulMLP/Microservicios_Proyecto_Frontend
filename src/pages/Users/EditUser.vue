@@ -315,7 +315,6 @@ export default {
 
       try {
         const result = await crearUsuarioFachada(this.userToSave);
-
         if (result) {
           if (result === 409) {
             // Usuario ya existe, muestra mensaje o emite estado de error
