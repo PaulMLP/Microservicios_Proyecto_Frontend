@@ -33,7 +33,7 @@ export default {
   },
   methods: {
     async openTask(tarea) {
-      this.$emit('getTarea', tarea);
+      this.$emit("getTarea", tarea);
     },
 
     handleDragStart(event, tareaId) {
