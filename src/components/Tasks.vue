@@ -76,7 +76,7 @@
             >Debe seleccionar al menos un investigador.</span
           >
         </div>
-        <div class="col-md-12 botones">
+        <div class="col-md-12 botones" v-if="role === 'responsable'">
           <p-button type="info" native-type="submit">
             <span class="ti-save"></span>
             <span style="margin-left: 5px">Guardar</span>
@@ -235,9 +235,8 @@ export default {
       );
       try {
         const usuariosCompletos = await Promise.all(
-          tarea.usuarios.map((id) => obtenerUsuarioFachada(id)),
+          this.tareaAux.usuarios.map((id) => obtenerUsuarioFachada(id)),
         );
-
         this.tareaAux.usuarios = usuariosCompletos;
         if (this.tareaAux.usuarios) this.users_await = false;
       } catch (error) {
@@ -246,6 +245,8 @@ export default {
       }
     },
     exit() {
+      this.tareaAux = null;
+      this.fetchAllTasks();
       this.view_task = false;
     },
     clean() {

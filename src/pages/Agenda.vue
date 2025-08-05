@@ -80,7 +80,7 @@
             >
           </div>
           <div class="col-md-12 botones">
-            <p-button type="info" native-type="submit">
+            <p-button v-if="!eventoAux.id" type="info" native-type="submit">
               <span class="ti-save"></span>
               <span style="margin-left: 5px">Guardar</span>
             </p-button>
